@@ -1,0 +1,18 @@
+meta {
+  name: Get Material Route
+  type: http
+  seq: 2
+}
+
+get {{base_url}}{{api_prefix}}/routes/material/1
+headers {
+  Authorization: Bearer {{auth_token}}
+}
+
+tests {
+  test("should return material route") {
+    expect(response.status).toBe(200)
+    expect(response.body.material_id).toBeDefined()
+    expect(response.body.route_points).toBeDefined()
+  }
+} 

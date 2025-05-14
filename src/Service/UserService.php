@@ -31,18 +31,24 @@ class UserService
         return $user;
     }
 
-    public function authenticate(array $data): ?User
+    public function authenticate(string $name, string $password): array
     {
-        $this->validator->validateLogin($data);
-        $user = $this->userRepository->findByName($data['name']);
+        $user = $this->userRepository->findByName($name);
         if (!$user) {
-            return null;
+            throw new Exception('User not found');
         }
 
-        if (!password_verify($data['password'], $user->getPasswordHash())) {
-            return null;
+        if (!password_verify($password, $user->getPasswordHash())) {
+            throw new Exception('Invalid password');
         }
 
-        return $user;
+        return [
+            'token' => bin2hex(random_bytes(32)),
+            'user' => [
+                'id' => $user->getId(),
+                'name' => $user->getName(),
+                'role' => $user->getRole()
+            ]
+        ];
     }
 }

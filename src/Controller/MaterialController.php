@@ -34,31 +34,31 @@ class MaterialController extends AbstractController
         }
     }
 
-    public function get(Request $request, Response $response, int $id): Response
+    public function get(Request $request, Response $response, string $id): Response
     {
         try {
-            $material = $this->materialService->getMaterialWithStatus($id);
+            $material = $this->materialService->getMaterialWithStatus((int)$id);
             return $this->jsonResponse($response, $material);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage(), 404);
         }
     }
 
-    public function update(Request $request, Response $response, int $id): Response
+    public function update(Request $request, Response $response, string $id): Response
     {
         try {
             $data = $request->getParsedBody();
-            $material = $this->materialService->updateMaterial($id, $data);
+            $material = $this->materialService->updateMaterial((int)$id, $data);
             return $this->jsonResponse($response, $material);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage());
         }
     }
 
-    public function delete(Request $request, Response $response, int $id): Response
+    public function delete(Request $request, Response $response, string $id): Response
     {
         try {
-            $this->materialService->deleteMaterial($id);
+            $this->materialService->deleteMaterial((int)$id);
             return $this->jsonResponse($response, ['message' => 'Material deleted']);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage());

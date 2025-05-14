@@ -1,0 +1,5 @@
+{
+  "base_url": "http://demo-server:8080",
+  "api_prefix": "/api",
+  "auth_token": "demo_token"
+} 

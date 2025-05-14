@@ -23,7 +23,7 @@ class Document
     private string $filePath;
 
     #[ORM\Column(name: 'created_at', type: 'datetime')]
-    private string $createdAt;
+    private \DateTime $createdAt;
 
     public function getId(): int
     {
@@ -69,12 +69,12 @@ class Document
         return $this;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(string $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;

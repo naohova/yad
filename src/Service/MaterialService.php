@@ -8,28 +8,25 @@ use Repository\MaterialRepository;
 use Repository\RfidTagRepository;
 use Repository\MaterialStatusRepository;
 use Exception;
+use \Validator\MaterialValidator;
 
 class MaterialService
 {
     public function __construct(
         private MaterialRepository $materialRepository,
         private RfidTagRepository $rfidTagRepository,
-        private MaterialStatusRepository $materialStatusRepository
+        private MaterialStatusRepository $materialStatusRepository,
+        private MaterialValidator $validator
     ) {}
 
-    public function createMaterial(array $data): Material
+    public function createMaterial(array $data): array
     {
-        // Проверяем, что RFID метка существует и активна
-        $rfidTag = $this->rfidTagRepository->findByTagUid($data['rfid_tag']);
-        if (!$rfidTag || !$rfidTag->isActive()) {
-            throw new Exception('Invalid or inactive RFID tag');
-        }
+        $this->validator->validateCreate($data);
 
         $material = new Material();
         $material->setName($data['name']);
         $material->setAmount($data['amount']);
         $material->setType($data['type']);
-        $material->setRfidTagId($rfidTag->getId());
 
         $this->materialRepository->beginTransaction();
         try {
@@ -40,19 +37,25 @@ class MaterialService
             $status->setMaterialId($material->getId());
             $status->setStatus('created');
             $status->setCurrentPointId($data['initial_point_id']);
-            $status->setUpdatedAt(date('Y-m-d H:i:s'));
+            $status->setUpdatedAt(new \DateTime());
             
             $this->materialStatusRepository->save($status);
             
             $this->materialRepository->commit();
-            return $material;
+            
+            return [
+                'id' => $material->getId(),
+                'name' => $material->getName(),
+                'amount' => $material->getAmount(),
+                'type' => $material->getType()
+            ];
         } catch (Exception $e) {
             $this->materialRepository->rollback();
             throw $e;
         }
     }
 
-    public function updateMaterial(int $id, array $data): Material
+    public function updateMaterial(int $id, array $data): array
     {
         $material = $this->materialRepository->find($id);
         if (!$material) {
@@ -70,27 +73,73 @@ class MaterialService
         }
 
         $this->materialRepository->save($material);
-        return $material;
+        
+        return [
+            'id' => $material->getId(),
+            'name' => $material->getName(),
+            'amount' => $material->getAmount(),
+            'type' => $material->getType()
+        ];
     }
 
     public function getMaterialWithStatus(int $id): array
     {
         $material = $this->materialRepository->find($id);
         if (!$material) {
-            throw new Exception('Material not found');
+            throw new Exception('Material not found', 404);
         }
 
         $status = $this->materialStatusRepository->findOneBy(['materialId' => $id]);
+        if (!$status) {
+            throw new Exception('Material status not found', 404);
+        }
         
         return [
-            'material' => $material,
-            'status' => $status
+            'id' => $material->getId(),
+            'name' => $material->getName(),
+            'amount' => $material->getAmount(),
+            'type' => $material->getType(),
+            'status' => [
+                'status' => $status->getStatus(),
+                'current_point_id' => $status->getCurrentPointId(),
+                'updated_at' => $status->getUpdatedAt()->format('Y-m-d H:i:s')
+            ]
         ];
+    }
+
+    public function deleteMaterial(int $id): void
+    {
+        $material = $this->materialRepository->find($id);
+        if (!$material) {
+            throw new Exception('Material not found');
+        }
+
+        $this->materialRepository->beginTransaction();
+        try {
+            // Удаляем все связанные статусы
+            $this->materialStatusRepository->deleteByMaterialId($id);
+            
+            // Удаляем материал
+            $this->materialRepository->delete($material);
+            
+            $this->materialRepository->commit();
+        } catch (Exception $e) {
+            $this->materialRepository->rollback();
+            throw $e;
+        }
     }
 
     public function getAllMaterials(): array
     {
-        return $this->materialRepository->findAll();
+        $materials = $this->materialRepository->findAll();
+        return array_map(function($material) {
+            return [
+                'id' => $material->getId(),
+                'name' => $material->getName(),
+                'amount' => $material->getAmount(),
+                'type' => $material->getType()
+            ];
+        }, $materials);
     }
 
     public function getAllMaterialsWithStatus(): array
@@ -101,8 +150,17 @@ class MaterialService
         foreach ($materials as $material) {
             $status = $this->materialStatusRepository->findOneBy(['materialId' => $material->getId()]);
             $result[] = [
-                'material' => $material,
-                'status' => $status
+                'material' => [
+                    'id' => $material->getId(),
+                    'name' => $material->getName(),
+                    'amount' => $material->getAmount(),
+                    'type' => $material->getType()
+                ],
+                'status' => $status ? [
+                    'status' => $status->getStatus(),
+                    'current_point_id' => $status->getCurrentPointId(),
+                    'updated_at' => $status->getUpdatedAt()->format('Y-m-d H:i:s')
+                ] : null
             ];
         }
 

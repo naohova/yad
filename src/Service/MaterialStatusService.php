@@ -44,7 +44,7 @@ class MaterialStatusService
         if (isset($data['current_point_id'])) {
             $status->setCurrentPointId($data['current_point_id']);
         }
-        $status->setUpdatedAt(date('Y-m-d H:i:s'));
+        $status->setUpdatedAt((new \DateTime())->format('Y-m-d H:i:s'));
 
         $this->materialStatusRepository->save($status);
         return $status;
@@ -52,6 +52,14 @@ class MaterialStatusService
 
     public function getMaterialsInStatus(string $status): array
     {
-        return $this->materialStatusRepository->findByStatus($status);
+        $statuses = $this->materialStatusRepository->findByStatus($status);
+        return array_map(function($status) {
+            return [
+                'material_id' => $status->getMaterialId(),
+                'status' => $status->getStatus(),
+                'current_point_id' => $status->getCurrentPointId(),
+                'updated_at' => $status->getUpdatedAt()->format('Y-m-d H:i:s')
+            ];
+        }, $statuses);
     }
 }

@@ -1,0 +1,21 @@
+{
+  "format": {
+    "indentSize": 2,
+    "lineEnding": "lf"
+  },
+  "request": {
+    "timeout": 30000,
+    "followRedirects": true,
+    "redirects": 5
+  },
+  "tests": {
+    "stopOnFailure": false,
+    "captureResponse": true
+  },
+  "vars": {
+    "enabled": true,
+    "strict": false
+  },
+  "version": "1",
+  "environment": "local"
+} 

@@ -34,7 +34,7 @@ class MaterialReceiptService
         $receipt->setMaterialId($material->getId());
         $receipt->setReceivedBy($user->getId());
         $receipt->setSupplierName($data['supplier_name']);
-        $receipt->setReceivedAt(date('Y-m-d H:i:s'));
+        $receipt->setReceivedAt((new \DateTime())->format('Y-m-d H:i:s'));
 
         $this->materialReceiptRepository->save($receipt);
         return $receipt;
@@ -42,6 +42,15 @@ class MaterialReceiptService
 
     public function getReceiptsByMaterial(int $materialId): array
     {
-        return $this->materialReceiptRepository->findBy(['materialId' => $materialId]);
+        $receipts = $this->materialReceiptRepository->findBy(['materialId' => $materialId]);
+        return array_map(function($receipt) {
+            return [
+                'id' => $receipt->getId(),
+                'material_id' => $receipt->getMaterialId(),
+                'received_by' => $receipt->getReceivedBy(),
+                'supplier_name' => $receipt->getSupplierName(),
+                'received_at' => $receipt->getReceivedAt()->format('Y-m-d H:i:s')
+            ];
+        }, $receipts);
     }
 }

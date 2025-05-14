@@ -19,11 +19,11 @@ class PlannedRoute
     #[ORM\Column(name: 'route_point_id', type: 'integer')]
     private int $routePointId;
 
-    #[ORM\Column(type: 'float')]
-    private float $sequence;
+    #[ORM\Column(type: 'integer')]
+    private int $sequence;
 
     #[ORM\Column(name: 'expected_at', type: 'datetime', nullable: true)]
-    private ?string $expectedAt;
+    private ?\DateTime $expectedAt = null;
 
     public function getId(): int
     {
@@ -58,25 +58,33 @@ class PlannedRoute
         return $this;
     }
 
-    public function getSequence(): float
+    public function getSequence(): int
     {
         return $this->sequence;
     }
 
-    public function setSequence(float $sequence): self
+    public function setSequence(int $sequence): self
     {
         $this->sequence = $sequence;
         return $this;
     }
 
-    public function getExpectedAt(): ?string
+    public function getExpectedAt(): ?\DateTime
     {
         return $this->expectedAt;
     }
 
     public function setExpectedAt(?string $expectedAt): self
     {
-        $this->expectedAt = $expectedAt;
+        if ($expectedAt === null) {
+            $this->expectedAt = null;
+        } else {
+            try {
+                $this->expectedAt = new \DateTime($expectedAt);
+            } catch (\Exception $e) {
+                throw new \InvalidArgumentException('Invalid date format for expected_at: ' . $expectedAt);
+            }
+        }
         return $this;
     }
 }

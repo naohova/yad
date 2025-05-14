@@ -1,0 +1,26 @@
+meta {
+  name: Create Route Point
+  type: http
+  seq: 1
+}
+
+post {{base_url}}{{api_prefix}}/route-points {
+  headers {
+    Content-Type: application/json
+    Authorization: Bearer {{auth_token}}
+  }
+  body {
+    {
+      "name": "Новая точка маршрута",
+      "type": "production"
+    }
+  }
+}
+
+tests {
+  test("should create new route point") {
+    status.should.equal(201)
+    res.body.should.have.property("id")
+    res.body.name.should.equal("Новая точка маршрута")
+  }
+} 

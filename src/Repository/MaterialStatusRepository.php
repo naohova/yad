@@ -21,4 +21,11 @@ class MaterialStatusRepository extends AbstractRepository
     {
         return $this->repository->findBy(['currentPointId' => $pointId]);
     }
+
+    public function deleteByMaterialId(int $materialId): void
+    {
+        $this->entityManager->createQuery('DELETE FROM Entity\MaterialStatus ms WHERE ms.materialId = :materialId')
+            ->setParameter('materialId', $materialId)
+            ->execute();
+    }
 }

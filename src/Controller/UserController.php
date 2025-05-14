@@ -17,9 +17,15 @@ class UserController extends AbstractController
     {
         try {
             $data = $request->getParsedBody();
+            error_log('User data: ' . json_encode($data));
             $user = $this->userService->createUser($data);
-            return $this->jsonResponse($response, $user, 201);
+            return $this->jsonResponse($response, [
+                'id' => $user->getId(),
+                'name' => $user->getName(),
+                'role' => $user->getRole()
+            ], 201);
         } catch (Exception $e) {
+            error_log('Error creating user: ' . $e->getMessage());
             return $this->errorResponse($response, $e->getMessage());
         }
     }
@@ -28,18 +34,14 @@ class UserController extends AbstractController
     {
         try {
             $data = $request->getParsedBody();
-            $result = $this->userService->authenticate($data['name'], $data['password']);
-            
-            if (!$result) {
-                return $this->errorResponse($response, 'Invalid credentials', 401);
+            try {
+                $result = $this->userService->authenticate($data['name'], $data['password']);
+                return $this->jsonResponse($response, $result);
+            } catch (Exception $e) {
+                return $this->errorResponse($response, $e->getMessage(), 401);
             }
-
-            return $this->jsonResponse($response, [
-                'token' => $result['token'],
-                'user' => $result['user']
-            ]);
         } catch (Exception $e) {
-            return $this->errorResponse($response, $e->getMessage());
+            return $this->errorResponse($response, $e->getMessage(), 400);
         }
     }
 } 

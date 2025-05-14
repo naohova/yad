@@ -23,7 +23,7 @@ class RfidTag
     private bool $isActive;
 
     #[ORM\Column(name: 'assigned_at', type: 'datetime')]
-    private string $assignedAt;
+    private \DateTime $assignedAt;
 
     public function getId(): int
     {
@@ -69,12 +69,12 @@ class RfidTag
         return $this;
     }
 
-    public function getAssignedAt(): string
+    public function getAssignedAt(): \DateTime
     {
         return $this->assignedAt;
     }
 
-    public function setAssignedAt(string $assignedAt): self
+    public function setAssignedAt(\DateTime $assignedAt): self
     {
         $this->assignedAt = $assignedAt;
         return $this;

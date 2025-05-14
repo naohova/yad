@@ -119,12 +119,14 @@ return [
         PlannedRouteRepository $plannedRouteRepository,
         MaterialRepository $materialRepository,
         RoutePointRepository $routePointRepository,
+        MaterialStatusRepository $materialStatusRepository,
         RouteValidator $validator
     ) {
         return new PlannedRouteService(
             $plannedRouteRepository,
             $materialRepository,
             $routePointRepository,
+            $materialStatusRepository,
             $validator
         );
     },

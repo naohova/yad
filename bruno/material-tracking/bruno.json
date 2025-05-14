@@ -1,0 +1,38 @@
+{
+  "version": "2",
+  "name": "Material Tracking API",
+  "description": "API для системы отслеживания материалов на производстве",
+  "language": "ru",
+  "collection": {
+    "folders": [
+      {
+        "name": "Route Points",
+        "description": "Управление точками маршрута",
+        "items": ["route-points/*"]
+      },
+      {
+        "name": "Routes",
+        "description": "Управление маршрутами материалов",
+        "items": ["routes/*"]
+      },
+      {
+        "name": "Movements",
+        "description": "Отслеживание перемещений материалов",
+        "items": ["movements/*"]
+      }
+    ]
+  },
+  "environments": [
+    {
+      "name": "Local",
+      "variables": "environments/local.env.json"
+    },
+    {
+      "name": "Demo",
+      "variables": "environments/demo.env.json"
+    }
+  ],
+  "auth": {
+    "type": "bearer"
+  }
+} 

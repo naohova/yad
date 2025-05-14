@@ -1,0 +1,39 @@
+meta {
+  name: Plan Material Route
+  type: http
+  seq: 1
+}
+
+post {{base_url}}{{api_prefix}}/routes: {
+  headers: {
+    Content-Type: application/json
+    Authorization: Bearer {{auth_token}}
+  }
+  body: {
+    "material_id": 1,
+    "route_points": [1, 2, 3, 5, 6]
+  }
+}
+
+vars: {
+  now_iso: function() {
+    return new Date().toISOString();
+  },
+  now_plus_2h_iso: function() {
+    let date = new Date();
+    date.setHours(date.getHours() + 2);
+    return date.toISOString();
+  },
+  now_plus_4h_iso: function() {
+    let date = new Date();
+    date.setHours(date.getHours() + 4);
+    return date.toISOString();
+  }
+}
+
+assert: {
+  status: 201
+  body.id: exists
+  body.material_id: 1
+  body.route_points: isArray
+} 

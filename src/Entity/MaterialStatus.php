@@ -12,6 +12,10 @@ class MaterialStatus
     #[ORM\Column(name: 'material_id', type: 'integer')]
     private int $materialId;
 
+    #[ORM\OneToOne(targetEntity: Material::class)]
+    #[ORM\JoinColumn(name: 'material_id', referencedColumnName: 'id')]
+    private Material $material;
+
     #[ORM\Column(name: 'current_point_id', type: 'integer')]
     private int $currentPointId;
 
@@ -19,7 +23,7 @@ class MaterialStatus
     private string $status;
 
     #[ORM\Column(name: 'updated_at', type: 'datetime')]
-    private string $updatedAt;
+    private \DateTime $updatedAt;
 
     public function getMaterialId(): int
     {
@@ -29,6 +33,18 @@ class MaterialStatus
     public function setMaterialId(int $materialId): self
     {
         $this->materialId = $materialId;
+        return $this;
+    }
+
+    public function getMaterial(): Material
+    {
+        return $this->material;
+    }
+
+    public function setMaterial(Material $material): self
+    {
+        $this->material = $material;
+        $this->materialId = $material->getId();
         return $this;
     }
 
@@ -54,12 +70,12 @@ class MaterialStatus
         return $this;
     }
 
-    public function getUpdatedAt(): string
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(string $updatedAt): self
+    public function setUpdatedAt(\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
         return $this;

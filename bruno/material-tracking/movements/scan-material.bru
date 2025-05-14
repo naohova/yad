@@ -1,0 +1,26 @@
+meta {
+  name: Scan Material
+  type: http
+  seq: 1
+}
+
+post {{base_url}}{{api_prefix}}/movements/scan
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+}
+
+body:json {
+  "material_id": 1,
+  "route_point_id": 2,
+  "scanned_by": 1,
+  "note": "Материал прошел проверку"
+}
+
+assert {
+  status: 200
+  body.id: exists
+  body.material_id: 1
+  body.route_point_id: 2
+} 

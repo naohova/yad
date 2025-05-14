@@ -13,8 +13,8 @@ class Material
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(name: 'rfid_tag_id', type: 'integer')]
-    private int $rfidTagId;
+    #[ORM\Column(name: 'rfid_tag_id', type: 'integer', nullable: true)]
+    private ?int $rfidTagId = null;
 
     #[ORM\Column(type: 'string')]
     private string $name;
@@ -24,6 +24,9 @@ class Material
 
     #[ORM\Column(type: 'string')]
     private string $type;
+
+    #[ORM\OneToOne(targetEntity: MaterialStatus::class, mappedBy: 'material')]
+    private ?MaterialStatus $status = null;
 
     public function getId(): int
     {
@@ -36,12 +39,12 @@ class Material
         return $this;
     }
 
-    public function getRfidTagId(): int
+    public function getRfidTagId(): ?int
     {
         return $this->rfidTagId;
     }
 
-    public function setRfidTagId(int $rfidTagId): self
+    public function setRfidTagId(?int $rfidTagId): self
     {
         $this->rfidTagId = $rfidTagId;
         return $this;
@@ -77,6 +80,20 @@ class Material
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getStatus(): ?MaterialStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?MaterialStatus $status): self
+    {
+        $this->status = $status;
+        if ($status !== null) {
+            $status->setMaterial($this);
+        }
         return $this;
     }
 }

@@ -53,21 +53,28 @@ class MovementService
             $event->setMaterialId($material->getId());
             $event->setRoutePointId($routePoint->getId());
             $event->setScannedBy($data['user_id']);
-            $event->setScannedAt(date('Y-m-d H:i:s'));
+            $event->setScannedAt(new \DateTime());
             $event->setIsDeviation($isDeviation);
             $event->setNote($data['note'] ?? '');
 
             $this->movementEventRepository->save($event);
 
-            // Обновляем статус материала
+            // Получаем или создаем статус материала
             $status = $this->materialStatusRepository->findOneBy(['materialId' => $material->getId()]);
+            if (!$status) {
+                $status = new MaterialStatus();
+                $status->setMaterial($material);
+                $status->setStatus('created');
+            }
+            
             $status->setCurrentPointId($routePoint->getId());
             $status->setStatus($isDeviation ? 'deviation' : 'in_progress');
-            $status->setUpdatedAt(date('Y-m-d H:i:s'));
+            $status->setUpdatedAt(new \DateTime());
 
             $this->materialStatusRepository->save($status);
 
             $this->movementEventRepository->commit();
+            
             return $event;
         } catch (Exception $e) {
             $this->movementEventRepository->rollback();
@@ -75,8 +82,16 @@ class MovementService
         }
     }
 
+    /**
+     * @return MovementEvent[]
+     */
     public function getMovementHistory(int $materialId): array
     {
+        $material = $this->materialRepository->find($materialId);
+        if (!$material) {
+            throw new Exception('Material not found');
+        }
+        
         return $this->movementEventRepository->findBy(
             ['materialId' => $materialId],
             ['scannedAt' => 'DESC']

@@ -11,7 +11,6 @@ class MaterialValidator extends AbstractValidator
                 ['name'],
                 ['amount'],
                 ['type'],
-                ['rfid_tag'],
                 ['initial_point_id']
             ],
             'integer' => [

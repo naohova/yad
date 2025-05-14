@@ -17,12 +17,28 @@ class RoutePointService
     public function createRoutePoint(array $data): RoutePoint
     {
         $this->validator->validateCreatePoint($data);
+
         $point = new RoutePoint();
         $point->setName($data['name']);
         $point->setType($data['type']);
 
         $this->routePointRepository->save($point);
+        
         return $point;
+    }
+
+    public function getRoutePoint(int $id): array
+    {
+        $point = $this->routePointRepository->find($id);
+        if (!$point) {
+            throw new Exception('Route point not found');
+        }
+        
+        return [
+            'id' => $point->getId(),
+            'name' => $point->getName(),
+            'type' => $point->getType()
+        ];
     }
 
     public function updateRoutePoint(int $id, array $data): RoutePoint
@@ -45,6 +61,13 @@ class RoutePointService
 
     public function getPointsByType(string $type): array
     {
-        return $this->routePointRepository->findByType($type);
+        $points = $this->routePointRepository->findByType($type);
+        return array_map(function($point) {
+            return [
+                'id' => $point->getId(),
+                'name' => $point->getName(),
+                'type' => $point->getType()
+            ];
+        }, $points);
     }
 }

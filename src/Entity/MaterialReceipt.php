@@ -23,7 +23,7 @@ class MaterialReceipt
     private string $supplierName;
 
     #[ORM\Column(name: 'received_at', type: 'datetime')]
-    private string $receivedAt;
+    private \DateTime $receivedAt;
 
     public function getId(): int
     {
@@ -69,12 +69,12 @@ class MaterialReceipt
         return $this;
     }
 
-    public function getReceivedAt(): string
+    public function getReceivedAt(): \DateTime
     {
         return $this->receivedAt;
     }
 
-    public function setReceivedAt(string $receivedAt): self
+    public function setReceivedAt(\DateTime $receivedAt): self
     {
         $this->receivedAt = $receivedAt;
         return $this;

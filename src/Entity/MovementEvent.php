@@ -23,7 +23,7 @@ class MovementEvent
     private int $scannedBy;
 
     #[ORM\Column(name: 'scanned_at', type: 'datetime')]
-    private string $scannedAt;
+    private \DateTime $scannedAt;
 
     #[ORM\Column(name: 'is_deviation', type: 'boolean')]
     private bool $isDeviation;
@@ -75,12 +75,12 @@ class MovementEvent
         return $this;
     }
 
-    public function getScannedAt(): string
+    public function getScannedAt(): \DateTime
     {
         return $this->scannedAt;
     }
 
-    public function setScannedAt(string $scannedAt): self
+    public function setScannedAt(\DateTime $scannedAt): self
     {
         $this->scannedAt = $scannedAt;
         return $this;

@@ -30,9 +30,10 @@ class DocumentController extends AbstractController
         }
     }
 
-    public function list(Request $request, Response $response, int $materialId): Response
+    public function list(Request $request, Response $response, string $materialId): Response
     {
         try {
+            $materialId = (int)$materialId;
             $documents = $this->documentService->getMaterialDocuments($materialId);
             return $this->jsonResponse($response, $documents);
         } catch (Exception $e) {
