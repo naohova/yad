@@ -64,4 +64,19 @@ class MaterialController extends AbstractController
             return $this->errorResponse($response, $e->getMessage());
         }
     }
+
+    public function assemble(Request $request, Response $response, string $id): Response
+    {
+        try {
+            $data = $request->getParsedBody();
+            if (!isset($data['child_ids']) || !is_array($data['child_ids'])) {
+                throw new Exception('child_ids array is required');
+            }
+            
+            $result = $this->materialService->assembleMaterial((int)$id, $data['child_ids']);
+            return $this->jsonResponse($response, $result);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
+        }
+    }
 } 

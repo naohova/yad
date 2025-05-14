@@ -28,6 +28,12 @@ class Material
     #[ORM\OneToOne(targetEntity: MaterialStatus::class, mappedBy: 'material')]
     private ?MaterialStatus $status = null;
 
+    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true)]
+    private ?\DateTime $deletedAt = null;
+
+    #[ORM\Column(name: 'parent_id', type: 'integer', nullable: true)]
+    private ?int $parentId = null;
+
     public function getId(): int
     {
         return $this->id;
@@ -94,6 +100,28 @@ class Material
         if ($status !== null) {
             $status->setMaterial($this);
         }
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    public function getParentId(): ?int
+    {
+        return $this->parentId;
+    }
+
+    public function setParentId(?int $parentId): self
+    {
+        $this->parentId = $parentId;
         return $this;
     }
 }

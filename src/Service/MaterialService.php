@@ -34,7 +34,7 @@ class MaterialService
             
             // Создаем начальный статус для материала
             $status = new MaterialStatus();
-            $status->setMaterialId($material->getId());
+            $status->setMaterial($material);
             $status->setStatus('created');
             $status->setCurrentPointId($data['initial_point_id']);
             $status->setUpdatedAt(new \DateTime());
@@ -43,12 +43,7 @@ class MaterialService
             
             $this->materialRepository->commit();
             
-            return [
-                'id' => $material->getId(),
-                'name' => $material->getName(),
-                'amount' => $material->getAmount(),
-                'type' => $material->getType()
-            ];
+            return $this->serializeMaterial($material);
         } catch (Exception $e) {
             $this->materialRepository->rollback();
             throw $e;
@@ -74,12 +69,7 @@ class MaterialService
 
         $this->materialRepository->save($material);
         
-        return [
-            'id' => $material->getId(),
-            'name' => $material->getName(),
-            'amount' => $material->getAmount(),
-            'type' => $material->getType()
-        ];
+        return $this->serializeMaterial($material);
     }
 
     public function getMaterialWithStatus(int $id): array
@@ -94,17 +84,14 @@ class MaterialService
             throw new Exception('Material status not found', 404);
         }
         
-        return [
-            'id' => $material->getId(),
-            'name' => $material->getName(),
-            'amount' => $material->getAmount(),
-            'type' => $material->getType(),
-            'status' => [
-                'status' => $status->getStatus(),
-                'current_point_id' => $status->getCurrentPointId(),
-                'updated_at' => $status->getUpdatedAt()->format('Y-m-d H:i:s')
-            ]
+        $result = $this->serializeMaterial($material);
+        $result['status'] = [
+            'status' => $status->getStatus(),
+            'current_point_id' => $status->getCurrentPointId(),
+            'updated_at' => $status->getUpdatedAt()->format('Y-m-d H:i:s')
         ];
+
+        return $result;
     }
 
     public function deleteMaterial(int $id): void
@@ -114,15 +101,44 @@ class MaterialService
             throw new Exception('Material not found');
         }
 
+        // Вместо физического удаления, устанавливаем deleted_at
+        $material->setDeletedAt(new \DateTime());
+        $this->materialRepository->save($material);
+    }
+
+    public function assembleMaterial(int $parentId, array $childIds): array
+    {
+        $parent = $this->materialRepository->find($parentId);
+        if (!$parent) {
+            throw new Exception('Parent material not found');
+        }
+
         $this->materialRepository->beginTransaction();
         try {
-            // Удаляем все связанные статусы
-            $this->materialStatusRepository->deleteByMaterialId($id);
-            
-            // Удаляем материал
-            $this->materialRepository->delete($material);
+            foreach ($childIds as $childId) {
+                $child = $this->materialRepository->find($childId);
+                if (!$child) {
+                    throw new Exception("Child material with id {$childId} not found");
+                }
+                if ($child->getDeletedAt() !== null) {
+                    throw new Exception("Child material with id {$childId} is already deleted");
+                }
+                
+                // Помечаем дочерний материал как удаленный и устанавливаем ссылку на родителя
+                $child->setDeletedAt(new \DateTime());
+                $child->setParentId($parentId);
+                $this->materialRepository->save($child);
+            }
             
             $this->materialRepository->commit();
+            
+            return [
+                'id' => $parent->getId(),
+                'name' => $parent->getName(),
+                'amount' => $parent->getAmount(),
+                'type' => $parent->getType(),
+                'assembled_from' => $childIds
+            ];
         } catch (Exception $e) {
             $this->materialRepository->rollback();
             throw $e;
@@ -133,13 +149,28 @@ class MaterialService
     {
         $materials = $this->materialRepository->findAll();
         return array_map(function($material) {
-            return [
-                'id' => $material->getId(),
-                'name' => $material->getName(),
-                'amount' => $material->getAmount(),
-                'type' => $material->getType()
-            ];
+            return $this->serializeMaterial($material);
         }, $materials);
+    }
+
+    private function serializeMaterial(Material $material): array
+    {
+        $data = [
+            'id' => $material->getId(),
+            'name' => $material->getName(),
+            'amount' => $material->getAmount(),
+            'type' => $material->getType()
+        ];
+
+        if ($material->getDeletedAt() !== null) {
+            $data['deleted_at'] = $material->getDeletedAt()->format('Y-m-d H:i:s');
+        }
+
+        if ($material->getParentId() !== null) {
+            $data['parent_id'] = $material->getParentId();
+        }
+
+        return $data;
     }
 
     public function getAllMaterialsWithStatus(): array

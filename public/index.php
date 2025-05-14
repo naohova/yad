@@ -80,6 +80,7 @@ $app->group('/api', function ($group) {
         $group->get('/{id:[0-9]+}', [MaterialController::class, 'get']);
         $group->put('/{id:[0-9]+}', [MaterialController::class, 'update']);
         $group->delete('/{id:[0-9]+}', [MaterialController::class, 'delete']);
+        $group->post('/{id:[0-9]+}/assemble', [MaterialController::class, 'assemble']);
     });
 
     // Movement routes

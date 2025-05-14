@@ -187,6 +187,65 @@ class MaterialTest extends TestCase
         $this->assertGreaterThanOrEqual(2, count($responseData));
     }
 
+    public function testAssembleMaterial(): void
+    {
+        // Создаем родительский материал
+        $parentData = [
+            'name' => 'Assembly',
+            'amount' => 1,
+            'type' => 'assembly',
+            'initial_point_id' => $this->routePointId
+        ];
+        
+        $request = $this->createRequest('POST', '/api/materials', $parentData);
+        $response = $this->app->handle($request);
+        $this->assertEquals(201, $response->getStatusCode());
+        $parentResponseData = json_decode((string)$response->getBody(), true);
+        $parentId = $parentResponseData['id'];
+
+        // Создаем дочерние материалы
+        $childIds = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $childData = [
+                'name' => "Part {$i}",
+                'amount' => 1,
+                'type' => 'part',
+                'initial_point_id' => $this->routePointId
+            ];
+            
+            $request = $this->createRequest('POST', '/api/materials', $childData);
+            $response = $this->app->handle($request);
+            $this->assertEquals(201, $response->getStatusCode());
+            $childResponseData = json_decode((string)$response->getBody(), true);
+            $childIds[] = $childResponseData['id'];
+        }
+
+        // Выполняем сборку
+        $assemblyData = [
+            'child_ids' => $childIds
+        ];
+        
+        $request = $this->createRequest('POST', "/api/materials/{$parentId}/assemble", $assemblyData);
+        $response = $this->app->handle($request);
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        $responseData = json_decode((string)$response->getBody(), true);
+        $this->assertEquals($parentId, $responseData['id']);
+        $this->assertEquals($assemblyData['child_ids'], $responseData['assembled_from']);
+
+        // Проверяем, что дочерние материалы помечены как удаленные
+        foreach ($childIds as $childId) {
+            $request = $this->createRequest('GET', "/api/materials/{$childId}");
+            $response = $this->app->handle($request);
+            $this->assertEquals(200, $response->getStatusCode());
+            
+            $childData = json_decode((string)$response->getBody(), true);
+            $this->assertArrayHasKey('deleted_at', $childData);
+            $this->assertArrayHasKey('parent_id', $childData);
+            $this->assertEquals($parentId, $childData['parent_id']);
+        }
+    }
+
     protected function tearDown(): void
     {
         // Очищаем тестовые данные только если EntityManager доступен

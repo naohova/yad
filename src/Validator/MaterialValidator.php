@@ -49,4 +49,21 @@ class MaterialValidator extends AbstractValidator
 
         $this->validate($data, $rules);
     }
+
+    public function validateAssemble(array $data): void
+    {
+        $rules = [
+            'required' => [
+                ['child_ids']
+            ],
+            'array' => [
+                ['child_ids']
+            ],
+            'arrayNotEmpty' => [
+                ['child_ids']
+            ]
+        ];
+
+        $this->validate($data, $rules);
+    }
 } 
