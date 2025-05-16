@@ -33,6 +33,9 @@ class DocumentController extends AbstractController
     public function list(Request $request, Response $response, string $materialId): Response
     {
         try {
+            if (!is_numeric($materialId)) {
+                throw new Exception('Material ID must be a number');
+            }
             $materialId = (int)$materialId;
             $documents = $this->documentService->getMaterialDocuments($materialId);
             return $this->jsonResponse($response, $documents);

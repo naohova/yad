@@ -153,17 +153,29 @@ class MaterialService
         }, $materials);
     }
 
+    public function searchMaterials(array $params): array
+    {
+        $materials = $this->materialRepository->findByParams($params);
+        return array_map(function($material) {
+            return $this->serializeMaterial($material);
+        }, $materials);
+    }
+
     private function serializeMaterial(Material $material): array
     {
         $data = [
             'id' => $material->getId(),
             'name' => $material->getName(),
             'amount' => $material->getAmount(),
-            'type' => $material->getType()
+            'type' => $material->getType(),
+            'part_number' => $material->getPartNumber(),
+            'last_route_point_id' => $material->getLastRoutePointId(),
+            'created_at' => $material->getCreatedAt()->format('Y-m-d\TH:i:s.u\Z'),
+            'updated_at' => $material->getUpdatedAt()->format('Y-m-d\TH:i:s.u\Z')
         ];
 
         if ($material->getDeletedAt() !== null) {
-            $data['deleted_at'] = $material->getDeletedAt()->format('Y-m-d H:i:s');
+            $data['deleted_at'] = $material->getDeletedAt()->format('Y-m-d\TH:i:s.u\Z');
         }
 
         if ($material->getParentId() !== null) {

@@ -80,6 +80,9 @@ class MovementController extends AbstractController
     public function history(Request $request, Response $response, string $materialId): Response
     {
         try {
+            if (!is_numeric($materialId)) {
+                throw new Exception('Material ID must be a number');
+            }
             $materialId = (int)$materialId;
             $history = $this->movementService->getMovementHistory($materialId);
             $events = array_map(function($event) {

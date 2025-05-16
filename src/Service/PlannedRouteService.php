@@ -89,7 +89,7 @@ class PlannedRouteService
                 'material_id' => $route->getMaterialId(),
                 'route_point_id' => $route->getRoutePointId(),
                 'sequence' => $route->getSequence(),
-                'expected_at' => $route->getExpectedAt()->format('Y-m-d\TH:i:s.u\Z')
+                'expected_at' => $route->getExpectedAt() ? $route->getExpectedAt()->format('Y-m-d\TH:i:s.u\Z') : null
             ];
         }, $routes);
     }

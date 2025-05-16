@@ -97,6 +97,10 @@ $app->group('/api', function ($group) {
 
     // Route routes
     $group->post('/route-points', [RouteController::class, 'createPoint']);
+    $group->get('/route-points', [RouteController::class, 'listPoints']);
+    $group->get('/route-points/{id:[0-9]+}', [RouteController::class, 'getPoint']);
+    $group->put('/route-points/{id:[0-9]+}', [RouteController::class, 'updatePoint']);
+    $group->delete('/route-points/{id:[0-9]+}', [RouteController::class, 'deletePoint']);
     $group->post('/routes', [RouteController::class, 'planRoute']);
     $group->get('/routes/material/{materialId}', [RouteController::class, 'getMaterialRoute']);
 });

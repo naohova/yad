@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'materials')]
+#[ORM\HasLifecycleCallbacks]
 class Material
 {
     #[ORM\Id]
@@ -33,6 +34,30 @@ class Material
 
     #[ORM\Column(name: 'parent_id', type: 'integer', nullable: true)]
     private ?int $parentId = null;
+
+    #[ORM\Column(name: 'part_number', type: 'string', length: 255, nullable: true)]
+    private ?string $partNumber = null;
+
+    #[ORM\Column(name: 'last_route_point_id', type: 'integer', nullable: true)]
+    private ?int $lastRoutePointId = null;
+
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private \DateTime $createdAt;
+
+    #[ORM\Column(name: 'updated_at', type: 'datetime')]
+    private \DateTime $updatedAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 
     public function getId(): int
     {
@@ -123,5 +148,37 @@ class Material
     {
         $this->parentId = $parentId;
         return $this;
+    }
+
+    public function getPartNumber(): ?string
+    {
+        return $this->partNumber;
+    }
+
+    public function setPartNumber(?string $partNumber): self
+    {
+        $this->partNumber = $partNumber;
+        return $this;
+    }
+
+    public function getLastRoutePointId(): ?int
+    {
+        return $this->lastRoutePointId;
+    }
+
+    public function setLastRoutePointId(?int $lastRoutePointId): self
+    {
+        $this->lastRoutePointId = $lastRoutePointId;
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
     }
 }

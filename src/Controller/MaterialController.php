@@ -27,7 +27,14 @@ class MaterialController extends AbstractController
     public function list(Request $request, Response $response): Response
     {
         try {
-            $materials = $this->materialService->getAllMaterials();
+            $params = $request->getQueryParams();
+            
+            if (empty($params)) {
+                $materials = $this->materialService->getAllMaterials();
+            } else {
+                $materials = $this->materialService->searchMaterials($params);
+            }
+            
             return $this->jsonResponse($response, $materials);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage());

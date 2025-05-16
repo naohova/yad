@@ -50,7 +50,7 @@ class DocumentService
         $document->setMaterialId($material->getId());
         $document->setType($data['type']);
         $document->setFilePath('/uploads/' . $fileName);
-        $document->setCreatedAt(new \DateTime());
+        $document->setCreatedAt(new \DateTime('now', new \DateTimeZone('UTC')));
 
         $this->documentRepository->save($document);
         

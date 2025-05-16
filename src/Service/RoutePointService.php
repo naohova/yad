@@ -70,4 +70,32 @@ class RoutePointService
             ];
         }, $points);
     }
+
+    public function getAllPoints(): array
+    {
+        $points = $this->routePointRepository->findAll();
+        return array_map(function($point) {
+            return [
+                'id' => $point->getId(),
+                'name' => $point->getName(),
+                'type' => $point->getType()
+            ];
+        }, $points);
+    }
+
+    public function deletePoint(int $id): void
+    {
+        $point = $this->routePointRepository->find($id);
+        if (!$point) {
+            throw new Exception('Route point not found');
+        }
+        
+        // Проверяем, не используется ли точка в маршрутах
+        $routes = $this->routePointRepository->findByRoutePoint($id);
+        if (!empty($routes)) {
+            throw new Exception('Cannot delete route point that is used in routes');
+        }
+        
+        $this->routePointRepository->delete($point);
+    }
 }
