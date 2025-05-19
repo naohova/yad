@@ -57,8 +57,12 @@ class MaterialRepository extends AbstractRepository
                     }
                     break;
                 case 'parent_id':
-                    $conditions[] = 'm.parentId = :parentId';
-                    $parameters['parentId'] = $value;
+                    if ($value === null) {
+                        $conditions[] = 'm.parentId IS NULL';
+                    } else {
+                        $conditions[] = 'm.parentId = :parentId';
+                        $parameters['parentId'] = $value;
+                    }
                     break;
                 case 'deleted':
                     if ($value) {
@@ -107,6 +111,9 @@ class MaterialRepository extends AbstractRepository
                     break;
             }
         }
+
+        // Добавляем условие по умолчанию для deleted_at IS NULL
+        $conditions[] = 'm.deletedAt IS NULL';
 
         if (!empty($conditions)) {
             $qb->where(implode(' AND ', $conditions));

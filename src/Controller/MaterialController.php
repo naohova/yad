@@ -29,10 +29,13 @@ class MaterialController extends AbstractController
         try {
             $params = $request->getQueryParams();
             
-            if (empty($params)) {
-                $materials = $this->materialService->getAllMaterials();
-            } else {
+            // Если установлен top_level=1, игнорируем все остальные параметры и ищем только материалы без родителя
+            if (isset($params['top_level']) && $params['top_level'] === '1') {
+                $materials = $this->materialService->searchMaterials(['parent_id' => null]);
+            } else if (!empty($params)) {
                 $materials = $this->materialService->searchMaterials($params);
+            } else {
+                $materials = $this->materialService->getAllMaterials();
             }
             
             return $this->jsonResponse($response, $materials);
