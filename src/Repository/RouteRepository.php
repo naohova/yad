@@ -26,7 +26,7 @@ class RouteRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         return $qb->select('r')
-            ->from('Entity\Route', 'r')
+            ->from('App\Entity\Route', 'r')
             ->where('r.deletedAt IS NULL')
             ->getQuery()
             ->getResult();
@@ -36,9 +36,9 @@ class RouteRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         return $qb->select('r')
-            ->from('Entity\Route', 'r')
+            ->from('App\Entity\Route', 'r')
             ->where('r.plannedStartDate IS NOT NULL')
-            ->andWhere('r.actualDate IS NULL')
+            ->andWhere('r.actualEndDate IS NULL')
             ->andWhere('r.deletedAt IS NULL')
             ->getQuery()
             ->getResult();
@@ -48,8 +48,8 @@ class RouteRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         return $qb->select('r')
-            ->from('Entity\Route', 'r')
-            ->where('r.actualDate IS NOT NULL')
+            ->from('App\Entity\Route', 'r')
+            ->where('r.actualEndDate IS NOT NULL')
             ->andWhere('r.deletedAt IS NULL')
             ->getQuery()
             ->getResult();
@@ -59,8 +59,8 @@ class RouteRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         return $qb->select('r')
-            ->from('Entity\Route', 'r')
-            ->where('r.actualDate > r.plannedEndDate')
+            ->from('App\Entity\Route', 'r')
+            ->where('r.actualEndDate > r.plannedEndDate')
             ->andWhere('r.deletedAt IS NULL')
             ->getQuery()
             ->getResult();

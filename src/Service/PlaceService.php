@@ -3,14 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Place;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
 use App\Validator\PlaceValidator;
 use Exception;
 
 class PlaceService
 {
     public function __construct(
-        private EntityRepository $placeRepository,
+        private EntityManager $entityManager,
         private PlaceValidator $validator
     ) {}
 
@@ -24,13 +24,14 @@ class PlaceService
         $place->setDescription($data['description'] ?? null);
         $place->setLocation($data['location'] ?? null);
 
-        $this->placeRepository->save($place);
+        $this->entityManager->persist($place);
+        $this->entityManager->flush();
         return $place;
     }
 
     public function getPlace(int $id): Place
     {
-        $place = $this->placeRepository->find($id);
+        $place = $this->entityManager->getRepository(Place::class)->find($id);
         if (!$place) {
             throw new Exception('Place not found');
         }
@@ -39,14 +40,14 @@ class PlaceService
 
     public function getAllPlaces(): array
     {
-        return $this->placeRepository->findAll();
+        return $this->entityManager->getRepository(Place::class)->findAll();
     }
 
     public function updatePlace(int $id, array $data): Place
     {
         $this->validator->validateUpdate($data);
 
-        $place = $this->placeRepository->find($id);
+        $place = $this->entityManager->getRepository(Place::class)->find($id);
         if (!$place) {
             throw new Exception('Place not found');
         }
@@ -64,17 +65,18 @@ class PlaceService
             $place->setLocation($data['location']);
         }
 
-        $this->placeRepository->save($place);
+        $this->entityManager->flush();
         return $place;
     }
 
     public function deletePlace(int $id): void
     {
-        $place = $this->placeRepository->find($id);
+        $place = $this->entityManager->getRepository(Place::class)->find($id);
         if (!$place) {
             throw new Exception('Place not found');
         }
 
-        $this->placeRepository->remove($place);
+        $this->entityManager->remove($place);
+        $this->entityManager->flush();
     }
 } 

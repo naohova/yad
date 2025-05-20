@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'places')]
-class Place
+class Place implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,7 +17,7 @@ class Place
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(name: 'place_type', type: 'string', length: 50)]
     private string $placeType;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -24,6 +25,9 @@ class Place
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $location;
+
+    #[ORM\Column(name: 'external_id', type: 'string', length: 255, nullable: true)]
+    private ?string $externalId = null;
 
     public function getId(): ?int
     {
@@ -72,5 +76,28 @@ class Place
     {
         $this->location = $location;
         return $this;
+    }
+
+    public function getExternalId(): ?string
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(?string $externalId): self
+    {
+        $this->externalId = $externalId;
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'type' => $this->placeType,
+            'description' => $this->description,
+            'location' => $this->location,
+            'external_id' => $this->externalId
+        ];
     }
 } 

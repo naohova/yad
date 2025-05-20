@@ -1,0 +1,2114 @@
+{
+    "info": {
+        "name": "YAD API",
+        "description": "API для системы управления материалами и процессами",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Materials",
+            "description": "Операции с материалами",
+            "item": [
+                {
+                    "name": "Get All Materials",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials"]
+                        },
+                        "description": "Получение списка всех материалов с информацией о их текущем местоположении"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "http://192.168.1.116:81/api/materials"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "Test Material",
+                                    "amount": 10,
+                                    "type": "test",
+                                    "part_number": "ABC123",
+                                    "last_route_point_id": 8,
+                                    "created_at": "2024-05-20T15:13:43.000000Z",
+                                    "updated_at": "2024-05-20T15:13:43.000000Z",
+                                    "status": {
+                                        "status": "created",
+                                        "current_point_id": 8,
+                                        "updated_at": "2024-05-20 15:13:43"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Material",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials"]
+                        },
+                        "description": "Создание нового материала",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Test Material\",\n    \"amount\": 1,\n    \"type\": \"test\",\n    \"initial_point_id\": 8\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "http://192.168.1.116:81/api/materials"
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 90,
+                                "name": "Test Material",
+                                "amount": 1,
+                                "type": "test",
+                                "part_number": null,
+                                "last_route_point_id": null,
+                                "created_at": "2024-05-20T15:13:43.000000Z",
+                                "updated_at": "2024-05-20T15:13:43.000000Z"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном материале"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "http://192.168.1.116:81/api/materials/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Test Material",
+                                "amount": 1,
+                                "type": "test",
+                                "part_number": null,
+                                "last_route_point_id": null,
+                                "created_at": "2024-05-20T15:13:43.000000Z",
+                                "updated_at": "2024-05-20T15:13:43.000000Z",
+                                "status": {
+                                    "status": "created",
+                                    "current_point_id": 8,
+                                    "updated_at": "2024-05-20 15:13:43"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Material",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о материале",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Test Material\",\n    \"amount\": 10\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Updated Test Material",
+                                "amount": 10,
+                                "type": "test",
+                                "part_number": null,
+                                "last_route_point_id": null,
+                                "created_at": "2024-05-20T15:13:43.000000Z",
+                                "updated_at": "2024-05-20T15:13:58.736220Z"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Material",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Удаление материала"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "message": "Material deleted"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Logistic",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials/:id/logistic",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials", ":id", "logistic"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о логистике материала"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "productId": 1,
+                                "detail_id": null,
+                                "logistic_map": {
+                                    "jj42324g-4": {
+                                        "name": "Склад 1",
+                                        "description": "Приемка и временное хранение",
+                                        "place_id": 1,
+                                        "place_type": "WH",
+                                        "process": {
+                                            "process_id": 1,
+                                            "planned_timestamp": ["2024-04-05 14:18:32", "2024-04-05 16:26:39"],
+                                            "fact_timestamp": ["1970-01-01 04:00:00", "1970-01-01 04:00:00"],
+                                            "description": "Хранение на складе",
+                                            "responsible": {
+                                                "1": {
+                                                    "employee_id": 1,
+                                                    "name": "Иван",
+                                                    "position": "Unknown",
+                                                    "department": "Unknown"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Assemble Material",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/materials/:id/assemble",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "materials", ":id", "assemble"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Сборка материала из других материалов",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"child_ids\": [2, 3, 4]\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "message": "Material assembled successfully"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Documents",
+            "description": "Операции с документами",
+            "item": [
+                {
+                    "name": "Get All Documents",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/documents",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "documents"]
+                        },
+                        "description": "Получение списка всех документов"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material_id": 1,
+                                    "type": "specification",
+                                    "file_path": "/documents/spec1.pdf",
+                                    "created_at": "2024-05-20T15:13:43.000000Z"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Document",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/documents",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "documents"]
+                        },
+                        "description": "Загрузка нового документа",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "material_id",
+                                    "type": "text",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "type",
+                                    "type": "text",
+                                    "value": "specification"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "material_id": 1,
+                                "type": "specification",
+                                "file_path": "/documents/uploaded/spec2.pdf",
+                                "created_at": "2024-05-20T15:14:22.000000Z"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "description": "Операции с пользователями",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/users",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "users"]
+                        },
+                        "description": "Получение списка всех пользователей"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "admin",
+                                    "role": "admin"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/users",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "users"]
+                        },
+                        "description": "Создание нового пользователя",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"new_user\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "name": "new_user",
+                                "role": "user"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/auth/login",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "auth", "login"]
+                        },
+                        "description": "Аутентификация пользователя",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"user\",\n    \"password\": \"password123\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Route Points",
+            "description": "Операции с точками маршрута",
+            "item": [
+                {
+                    "name": "Get All Route Points",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/route-points",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "route-points"]
+                        },
+                        "description": "Получение списка всех точек маршрута"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "Точка 1",
+                                    "description": "Описание точки 1",
+                                    "createdAt": "2024-05-20 15:13:43",
+                                    "updatedAt": null,
+                                    "deletedAt": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Route Point",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/route-points",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "route-points"]
+                        },
+                        "description": "Создание новой точки маршрута",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Новая точка\",\n    \"description\": \"Описание новой точки\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "name": "Новая точка",
+                                "description": "Описание новой точки",
+                                "createdAt": "2024-05-20 15:14:22",
+                                "updatedAt": null,
+                                "deletedAt": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Route Point",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/route-points/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "route-points", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID точки маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретной точке маршрута"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Точка 1",
+                                "description": "Описание точки 1",
+                                "createdAt": "2024-05-20 15:13:43",
+                                "updatedAt": null,
+                                "deletedAt": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Route Point",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/route-points/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "route-points", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID точки маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о точке маршрута",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Обновленная точка\",\n    \"description\": \"Обновленное описание\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Обновленная точка",
+                                "description": "Обновленное описание",
+                                "createdAt": "2024-05-20 15:13:43",
+                                "updatedAt": "2024-05-20 15:15:00",
+                                "deletedAt": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Route Point",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/route-points/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "route-points", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID точки маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Удаление точки маршрута"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Routes",
+            "description": "Операции с маршрутами",
+            "item": [
+                {
+                    "name": "Get All Routes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes"]
+                        },
+                        "description": "Получение списка всех маршрутов"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material": {
+                                        "id": 1,
+                                        "name": "Test Material"
+                                    },
+                                    "routePoint": {
+                                        "id": 1,
+                                        "name": "Точка 1"
+                                    },
+                                    "plannedStartDate": "2024-05-20 10:00:00",
+                                    "plannedEndDate": "2024-05-20 11:00:00",
+                                    "actualDate": null,
+                                    "delayReason": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Planned Route",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes/planned",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes", "planned"]
+                        },
+                        "description": "Создание планового маршрута",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"material_id\": 1,\n    \"route_point_id\": 1,\n    \"planned_start_date\": \"2024-05-20 10:00:00\",\n    \"planned_end_date\": \"2024-05-20 11:00:00\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "material": {
+                                    "id": 1,
+                                    "name": "Test Material"
+                                },
+                                "routePoint": {
+                                    "id": 1,
+                                    "name": "Точка 1"
+                                },
+                                "plannedStartDate": "2024-05-20 10:00:00",
+                                "plannedEndDate": "2024-05-20 11:00:00",
+                                "actualDate": null,
+                                "delayReason": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Actual Route",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes/actual",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes", "actual"]
+                        },
+                        "description": "Создание фактического маршрута",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"material_id\": 1,\n    \"route_point_id\": 1,\n    \"actual_date\": \"2024-05-20 10:15:00\",\n    \"delay_reason\": \"Задержка на складе\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 3,
+                                "material": {
+                                    "id": 1,
+                                    "name": "Test Material"
+                                },
+                                "routePoint": {
+                                    "id": 1,
+                                    "name": "Точка 1"
+                                },
+                                "plannedStartDate": null,
+                                "plannedEndDate": null,
+                                "actualDate": "2024-05-20 10:15:00",
+                                "delayReason": "Задержка на складе"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Route",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном маршруте"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "material": {
+                                    "id": 1,
+                                    "name": "Test Material"
+                                },
+                                "routePoint": {
+                                    "id": 1,
+                                    "name": "Точка 1"
+                                },
+                                "plannedStartDate": "2024-05-20 10:00:00",
+                                "plannedEndDate": "2024-05-20 11:00:00",
+                                "actualDate": null,
+                                "delayReason": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Route",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о маршруте",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"planned_start_date\": \"2024-05-20 11:00:00\",\n    \"planned_end_date\": \"2024-05-20 12:00:00\",\n    \"actual_date\": \"2024-05-20 11:15:00\",\n    \"delay_reason\": \"Изменение графика\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "material": {
+                                    "id": 1,
+                                    "name": "Test Material"
+                                },
+                                "routePoint": {
+                                    "id": 1,
+                                    "name": "Точка 1"
+                                },
+                                "plannedStartDate": "2024-05-20 11:00:00",
+                                "plannedEndDate": "2024-05-20 12:00:00",
+                                "actualDate": "2024-05-20 11:15:00",
+                                "delayReason": "Изменение графика"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Route",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/routes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "routes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID маршрута"
+                                }
+                            ]
+                        },
+                        "description": "Удаление маршрута"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Material Processes",
+            "description": "Операции с материальными процессами",
+            "item": [
+                {
+                    "name": "Get All Material Processes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes"]
+                        },
+                        "description": "Получение списка всех материальных процессов"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material": {
+                                        "id": 1,
+                                        "part_number": "ABC123"
+                                    },
+                                    "process": {
+                                        "id": 1,
+                                        "name": "Хранение на складе"
+                                    },
+                                    "employee": {
+                                        "id": 1,
+                                        "name": "Иван"
+                                    },
+                                    "place": {
+                                        "id": 1,
+                                        "name": "Склад 1"
+                                    },
+                                    "planned_start": "2024-04-05 14:18:32",
+                                    "planned_end": "2024-04-05 16:26:39",
+                                    "fact_start": null,
+                                    "fact_end": null,
+                                    "status": "new",
+                                    "notes": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Material Process",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes"]
+                        },
+                        "description": "Создание нового материального процесса",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"material_id\": 1,\n    \"process_id\": 1,\n    \"employee_id\": 1,\n    \"place_id\": 1,\n    \"status\": \"new\",\n    \"planned_start\": \"2024-04-05 14:18:32\",\n    \"planned_end\": \"2024-04-05 16:26:39\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "material": {
+                                    "id": 1,
+                                    "part_number": "ABC123"
+                                },
+                                "process": {
+                                    "id": 1,
+                                    "name": "Хранение на складе"
+                                },
+                                "employee": {
+                                    "id": 1,
+                                    "name": "Иван"
+                                },
+                                "place": {
+                                    "id": 1,
+                                    "name": "Склад 1"
+                                },
+                                "planned_start": "2024-04-05 14:18:32",
+                                "planned_end": "2024-04-05 16:26:39",
+                                "fact_start": null,
+                                "fact_end": null,
+                                "status": "new",
+                                "notes": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Process",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материального процесса"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном материальном процессе"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "material": {
+                                    "id": 1,
+                                    "part_number": "ABC123"
+                                },
+                                "process": {
+                                    "id": 1,
+                                    "name": "Хранение на складе"
+                                },
+                                "employee": {
+                                    "id": 1,
+                                    "name": "Иван"
+                                },
+                                "place": {
+                                    "id": 1,
+                                    "name": "Склад 1"
+                                },
+                                "planned_start": "2024-04-05 14:18:32",
+                                "planned_end": "2024-04-05 16:26:39",
+                                "fact_start": null,
+                                "fact_end": null,
+                                "status": "new",
+                                "notes": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Material Process",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материального процесса"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о материальном процессе",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"in_progress\",\n    \"fact_start\": \"2024-04-05 14:20:00\",\n    \"notes\": \"Процесс начат\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "material": {
+                                    "id": 1,
+                                    "part_number": "ABC123"
+                                },
+                                "process": {
+                                    "id": 1,
+                                    "name": "Хранение на складе"
+                                },
+                                "employee": {
+                                    "id": 1,
+                                    "name": "Иван"
+                                },
+                                "place": {
+                                    "id": 1,
+                                    "name": "Склад 1"
+                                },
+                                "planned_start": "2024-04-05 14:18:32",
+                                "planned_end": "2024-04-05 16:26:39",
+                                "fact_start": "2024-04-05 14:20:00",
+                                "fact_end": null,
+                                "status": "in_progress",
+                                "notes": "Процесс начат"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Material Process",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID материального процесса"
+                                }
+                            ]
+                        },
+                        "description": "Удаление материального процесса"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Processes by Material",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/material/:material_id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", "material", ":material_id"],
+                            "variable": [
+                                {
+                                    "key": "material_id",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Получение списка материальных процессов для конкретного материала"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material": {
+                                        "id": 1,
+                                        "part_number": "ABC123"
+                                    },
+                                    "process": {
+                                        "id": 1,
+                                        "name": "Хранение на складе"
+                                    },
+                                    "employee": {
+                                        "id": 1,
+                                        "name": "Иван"
+                                    },
+                                    "place": {
+                                        "id": 1,
+                                        "name": "Склад 1"
+                                    },
+                                    "planned_start": "2024-04-05 14:18:32",
+                                    "planned_end": "2024-04-05 16:26:39",
+                                    "fact_start": null,
+                                    "fact_end": null,
+                                    "status": "new",
+                                    "notes": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Processes by Employee",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/employee/:employee_id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", "employee", ":employee_id"],
+                            "variable": [
+                                {
+                                    "key": "employee_id",
+                                    "value": "1",
+                                    "description": "ID сотрудника"
+                                }
+                            ]
+                        },
+                        "description": "Получение списка материальных процессов для конкретного сотрудника"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material": {
+                                        "id": 1,
+                                        "part_number": "ABC123"
+                                    },
+                                    "process": {
+                                        "id": 1,
+                                        "name": "Хранение на складе"
+                                    },
+                                    "employee": {
+                                        "id": 1,
+                                        "name": "Иван"
+                                    },
+                                    "place": {
+                                        "id": 1,
+                                        "name": "Склад 1"
+                                    },
+                                    "planned_start": "2024-04-05 14:18:32",
+                                    "planned_end": "2024-04-05 16:26:39",
+                                    "fact_start": null,
+                                    "fact_end": null,
+                                    "status": "new",
+                                    "notes": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Processes by Place",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/material-processes/place/:place_id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "material-processes", "place", ":place_id"],
+                            "variable": [
+                                {
+                                    "key": "place_id",
+                                    "value": "1",
+                                    "description": "ID места"
+                                }
+                            ]
+                        },
+                        "description": "Получение списка материальных процессов для конкретного места"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material": {
+                                        "id": 1,
+                                        "part_number": "ABC123"
+                                    },
+                                    "process": {
+                                        "id": 1,
+                                        "name": "Хранение на складе"
+                                    },
+                                    "employee": {
+                                        "id": 1,
+                                        "name": "Иван"
+                                    },
+                                    "place": {
+                                        "id": 1,
+                                        "name": "Склад 1"
+                                    },
+                                    "planned_start": "2024-04-05 14:18:32",
+                                    "planned_end": "2024-04-05 16:26:39",
+                                    "fact_start": null,
+                                    "fact_end": null,
+                                    "status": "new",
+                                    "notes": null
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Employees",
+            "description": "Операции с сотрудниками",
+            "item": [
+                {
+                    "name": "Get All Employees",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/employees",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "employees"]
+                        },
+                        "description": "Получение списка всех сотрудников"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "Иван",
+                                    "position": "Инженер",
+                                    "department": "Производство",
+                                    "email": "ivan@example.com",
+                                    "phone": "+7 999 123 45 67"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Employee",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/employees",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "employees"]
+                        },
+                        "description": "Создание нового сотрудника",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Петр\",\n    \"position\": \"Техник\",\n    \"department\": \"Производство\",\n    \"email\": \"petr@example.com\",\n    \"phone\": \"+7 999 765 43 21\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "name": "Петр",
+                                "position": "Техник",
+                                "department": "Производство",
+                                "email": "petr@example.com",
+                                "phone": "+7 999 765 43 21"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Employee",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/employees/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "employees", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID сотрудника"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном сотруднике"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Иван",
+                                "position": "Инженер",
+                                "department": "Производство",
+                                "email": "ivan@example.com",
+                                "phone": "+7 999 123 45 67"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Employee",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/employees/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "employees", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID сотрудника"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о сотруднике",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"position\": \"Старший инженер\",\n    \"email\": \"ivan.new@example.com\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Иван",
+                                "position": "Старший инженер",
+                                "department": "Производство",
+                                "email": "ivan.new@example.com",
+                                "phone": "+7 999 123 45 67"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Employee",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/employees/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "employees", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID сотрудника"
+                                }
+                            ]
+                        },
+                        "description": "Удаление сотрудника"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Processes",
+            "description": "Операции с процессами",
+            "item": [
+                {
+                    "name": "Get All Processes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/processes",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "processes"]
+                        },
+                        "description": "Получение списка всех процессов"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "Хранение на складе",
+                                    "description": "Хранение на складе",
+                                    "responsible": {
+                                        "id": 1,
+                                        "name": "Иван",
+                                        "position": "Инженер",
+                                        "department": "Производство"
+                                    },
+                                    "place": {
+                                        "id": 1,
+                                        "name": "Склад 1",
+                                        "type": "WH",
+                                        "description": "Приемка и временное хранение",
+                                        "location": null,
+                                        "external_id": "jj42324g-4"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Process",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/processes",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "processes"]
+                        },
+                        "description": "Создание нового процесса",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Обработка детали\",\n    \"description\": \"Механическая обработка детали\",\n    \"responsible_id\": 1,\n    \"place_id\": 2\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "name": "Обработка детали",
+                                "description": "Механическая обработка детали",
+                                "responsible": {
+                                    "id": 1,
+                                    "name": "Иван",
+                                    "position": "Инженер",
+                                    "department": "Производство"
+                                },
+                                "place": {
+                                    "id": 2,
+                                    "name": "Цех 1",
+                                    "type": "PROD",
+                                    "description": "Производственный цех",
+                                    "location": null,
+                                    "external_id": null
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Process",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID процесса"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном процессе"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Хранение на складе",
+                                "description": "Хранение на складе",
+                                "responsible": {
+                                    "id": 1,
+                                    "name": "Иван",
+                                    "position": "Инженер",
+                                    "department": "Производство"
+                                },
+                                "place": {
+                                    "id": 1,
+                                    "name": "Склад 1",
+                                    "type": "WH",
+                                    "description": "Приемка и временное хранение",
+                                    "location": null,
+                                    "external_id": "jj42324g-4"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Process",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID процесса"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о процессе",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"description\": \"Обновленное описание процесса\",\n    \"responsible_id\": 2\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Хранение на складе",
+                                "description": "Обновленное описание процесса",
+                                "responsible": {
+                                    "id": 2,
+                                    "name": "Петр",
+                                    "position": "Техник",
+                                    "department": "Производство"
+                                },
+                                "place": {
+                                    "id": 1,
+                                    "name": "Склад 1",
+                                    "type": "WH",
+                                    "description": "Приемка и временное хранение",
+                                    "location": null,
+                                    "external_id": "jj42324g-4"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Process",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/processes/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "processes", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID процесса"
+                                }
+                            ]
+                        },
+                        "description": "Удаление процесса"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Places",
+            "description": "Операции с местами",
+            "item": [
+                {
+                    "name": "Get All Places",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/places",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "places"]
+                        },
+                        "description": "Получение списка всех мест"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "name": "Склад 1",
+                                    "type": "WH",
+                                    "description": "Приемка и временное хранение",
+                                    "location": null,
+                                    "external_id": "jj42324g-4"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Place",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/places",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "places"]
+                        },
+                        "description": "Создание нового места",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Цех 1\",\n    \"type\": \"PROD\",\n    \"description\": \"Производственный цех\",\n    \"location\": \"Корпус А\",\n    \"external_id\": \"prod-a-1\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 2,
+                                "name": "Цех 1",
+                                "type": "PROD",
+                                "description": "Производственный цех",
+                                "location": "Корпус А",
+                                "external_id": "prod-a-1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Place",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/places/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "places", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID места"
+                                }
+                            ]
+                        },
+                        "description": "Получение информации о конкретном месте"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Склад 1",
+                                "type": "WH",
+                                "description": "Приемка и временное хранение",
+                                "location": null,
+                                "external_id": "jj42324g-4"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Place",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/places/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "places", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID места"
+                                }
+                            ]
+                        },
+                        "description": "Обновление информации о месте",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"description\": \"Обновленное описание места\",\n    \"location\": \"Новое расположение\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "name": "Склад 1",
+                                "type": "WH",
+                                "description": "Обновленное описание места",
+                                "location": "Новое расположение",
+                                "external_id": "jj42324g-4"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Place",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/places/:id",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "places", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "ID места"
+                                }
+                            ]
+                        },
+                        "description": "Удаление места"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "No Content",
+                            "code": 204,
+                            "_postman_previewlanguage": "json"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Movements",
+            "description": "Операции с перемещениями материалов",
+            "item": [
+                {
+                    "name": "Scan Movement",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/movements/scan",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "movements", "scan"]
+                        },
+                        "description": "Сканирование перемещения материала",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"material_id\": 1,\n    \"point_id\": 2,\n    \"timestamp\": \"2024-04-05 14:20:00\"\n}"
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "body": {
+                                "id": 1,
+                                "material_id": 1,
+                                "point_id": 2,
+                                "timestamp": "2024-04-05 14:20:00",
+                                "status": "scanned"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Material Movement History",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://192.168.1.116:81/api/movements/material/:materialId",
+                            "protocol": "http",
+                            "host": ["192.168.1.116"],
+                            "port": "81",
+                            "path": ["api", "movements", "material", ":materialId"],
+                            "variable": [
+                                {
+                                    "key": "materialId",
+                                    "value": "1",
+                                    "description": "ID материала"
+                                }
+                            ]
+                        },
+                        "description": "Получение истории перемещений материала"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": [
+                                {
+                                    "id": 1,
+                                    "material_id": 1,
+                                    "point_id": 2,
+                                    "timestamp": "2024-04-05 14:20:00",
+                                    "status": "scanned"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+} 

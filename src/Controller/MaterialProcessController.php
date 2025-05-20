@@ -10,27 +10,62 @@ use App\Entity\Place;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Doctrine\ORM\EntityManager;
+use Exception;
+use App\Service\MaterialProcessService;
 
 class MaterialProcessController extends AbstractController
 {
-    public function __construct(EntityManager $entityManager)
+    private MaterialProcessService $materialProcessService;
+
+    public function __construct(EntityManager $entityManager, MaterialProcessService $materialProcessService)
     {
         parent::__construct($entityManager);
+        $this->materialProcessService = $materialProcessService;
+    }
+
+    private function formatMaterialProcess(MaterialProcess $process): array
+    {
+        $material = $process->getMaterial();
+        return [
+            'id' => $process->getId(),
+            'material' => [
+                'id' => $material?->getId(),
+                'part_number' => $material?->getPartNumber()
+            ],
+            'process' => $process->getProcess(),
+            'employee' => $process->getEmployee(),
+            'place' => $process->getPlace(),
+            'planned_start' => $process->getPlannedStart() ? $process->getPlannedStart()->format('Y-m-d H:i:s') : null,
+            'planned_end' => $process->getPlannedEnd() ? $process->getPlannedEnd()->format('Y-m-d H:i:s') : null,
+            'fact_start' => $process->getFactStart() ? $process->getFactStart()->format('Y-m-d H:i:s') : null,
+            'fact_end' => $process->getFactEnd() ? $process->getFactEnd()->format('Y-m-d H:i:s') : null,
+            'status' => $process->getStatus(),
+            'notes' => $process->getNotes()
+        ];
     }
 
     public function getAll(Request $request, Response $response): Response
     {
-        $processes = $this->entityManager->getRepository(MaterialProcess::class)->findAll();
-        return $this->jsonResponse($response, $processes);
+        try {
+            $processes = $this->entityManager->getRepository(MaterialProcess::class)->findAll();
+            $result = array_map([$this, 'formatMaterialProcess'], $processes);
+            return $this->jsonResponse($response, $result);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
+        }
     }
 
-    public function getOne(Request $request, Response $response, array $args): Response
+    public function getOne(Request $request, Response $response, string $id): Response
     {
-        $process = $this->entityManager->find(MaterialProcess::class, $args['id']);
-        if (!$process) {
-            return $this->notFoundResponse($response);
+        try {
+            $process = $this->entityManager->find(MaterialProcess::class, (int)$id);
+            if (!$process) {
+                return $this->notFoundResponse($response);
+            }
+            return $this->jsonResponse($response, $this->formatMaterialProcess($process));
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
         }
-        return $this->jsonResponse($response, $process);
     }
 
     public function create(Request $request, Response $response): Response
@@ -44,8 +79,7 @@ class MaterialProcessController extends AbstractController
         $place = $this->entityManager->find(Place::class, $data['place_id']);
 
         if (!$material || !$process || !$employee || !$place) {
-            return $response->withStatus(400)
-                ->withJson(['error' => 'One or more related entities not found']);
+            return $this->errorResponse($response, 'One or more related entities not found', 400);
         }
 
         $materialProcess = new MaterialProcess();
@@ -56,19 +90,28 @@ class MaterialProcessController extends AbstractController
         $materialProcess->setStatus($data['status']);
         $materialProcess->setNotes($data['notes'] ?? null);
         
-        if (isset($data['end_time'])) {
-            $materialProcess->setEndTime(new \DateTime($data['end_time']));
+        if (isset($data['planned_start'])) {
+            $materialProcess->setPlannedStart(new \DateTime($data['planned_start']));
+        }
+        if (isset($data['planned_end'])) {
+            $materialProcess->setPlannedEnd(new \DateTime($data['planned_end']));
+        }
+        if (isset($data['fact_start'])) {
+            $materialProcess->setFactStart(new \DateTime($data['fact_start']));
+        }
+        if (isset($data['fact_end'])) {
+            $materialProcess->setFactEnd(new \DateTime($data['fact_end']));
         }
 
         $this->entityManager->persist($materialProcess);
         $this->entityManager->flush();
 
-        return $this->jsonResponse($response, $materialProcess, 201);
+        return $this->jsonResponse($response, $this->formatMaterialProcess($materialProcess), 201);
     }
 
-    public function update(Request $request, Response $response, array $args): Response
+    public function update(Request $request, Response $response, string $id): Response
     {
-        $materialProcess = $this->entityManager->find(MaterialProcess::class, $args['id']);
+        $materialProcess = $this->entityManager->find(MaterialProcess::class, (int)$id);
         if (!$materialProcess) {
             return $this->notFoundResponse($response);
         }
@@ -111,33 +154,44 @@ class MaterialProcessController extends AbstractController
             $materialProcess->setNotes($data['notes']);
         }
 
-        if (isset($data['end_time'])) {
-            $materialProcess->setEndTime(new \DateTime($data['end_time']));
+        if (isset($data['planned_start'])) {
+            $materialProcess->setPlannedStart(new \DateTime($data['planned_start']));
+        }
+        if (isset($data['planned_end'])) {
+            $materialProcess->setPlannedEnd(new \DateTime($data['planned_end']));
+        }
+        if (isset($data['fact_start'])) {
+            $materialProcess->setFactStart(new \DateTime($data['fact_start']));
+        }
+        if (isset($data['fact_end'])) {
+            $materialProcess->setFactEnd(new \DateTime($data['fact_end']));
         }
 
         $this->entityManager->flush();
 
-        return $this->jsonResponse($response, $materialProcess);
+        return $this->jsonResponse($response, $this->formatMaterialProcess($materialProcess));
     }
 
     public function delete(Request $request, Response $response, array $args): Response
     {
-        $materialProcess = $this->entityManager->find(MaterialProcess::class, $args['id']);
-        if (!$materialProcess) {
-            return $this->notFoundResponse($response);
+        try {
+            $this->materialProcessService->deleteMaterialProcess((int)$args['id']);
+            return $this->jsonResponse($response, ['message' => 'Material process deleted']);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
         }
-
-        $this->entityManager->remove($materialProcess);
-        $this->entityManager->flush();
-
-        return $response->withStatus(204);
     }
 
-    public function getByMaterial(Request $request, Response $response, array $args): Response
+    public function getByMaterial(Request $request, Response $response): Response
     {
-        $processes = $this->entityManager->getRepository(MaterialProcess::class)
-            ->findBy(['material' => $args['material_id']]);
-        return $this->jsonResponse($response, $processes);
+        $materialId = (int) $request->getAttribute('id');
+        try {
+            $processes = $this->materialProcessService->getByMaterial($materialId);
+            $result = array_map([$this, 'formatMaterialProcess'], $processes);
+            return $this->jsonResponse($response, $result);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
+        }
     }
 
     public function getByEmployee(Request $request, Response $response, array $args): Response

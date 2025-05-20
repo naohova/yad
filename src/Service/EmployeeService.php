@@ -3,14 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Employee;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
 use App\Validator\EmployeeValidator;
 use Exception;
 
 class EmployeeService
 {
     public function __construct(
-        private EntityRepository $employeeRepository,
+        private EntityManager $entityManager,
         private EmployeeValidator $validator
     ) {}
 
@@ -25,32 +25,30 @@ class EmployeeService
         $employee->setEmail($data['email'] ?? null);
         $employee->setPhone($data['phone'] ?? null);
 
-        $this->employeeRepository->save($employee);
+        $this->entityManager->persist($employee);
+        $this->entityManager->flush();
+
         return $employee;
     }
 
-    public function getEmployee(int $id): Employee
+    public function getEmployee(int $id): ?Employee
     {
-        $employee = $this->employeeRepository->find($id);
-        if (!$employee) {
-            throw new Exception('Employee not found');
-        }
-        return $employee;
+        return $this->entityManager->find(Employee::class, $id);
     }
 
     public function getAllEmployees(): array
     {
-        return $this->employeeRepository->findAll();
+        return $this->entityManager->getRepository(Employee::class)->findAll();
     }
 
-    public function updateEmployee(int $id, array $data): Employee
+    public function updateEmployee(int $id, array $data): ?Employee
     {
-        $this->validator->validateUpdate($data);
-
-        $employee = $this->employeeRepository->find($id);
+        $employee = $this->getEmployee($id);
         if (!$employee) {
-            throw new Exception('Employee not found');
+            return null;
         }
+
+        $this->validator->validateUpdate($data);
 
         if (isset($data['name'])) {
             $employee->setName($data['name']);
@@ -68,17 +66,21 @@ class EmployeeService
             $employee->setPhone($data['phone']);
         }
 
-        $this->employeeRepository->save($employee);
+        $this->entityManager->flush();
+
         return $employee;
     }
 
-    public function deleteEmployee(int $id): void
+    public function deleteEmployee(int $id): bool
     {
-        $employee = $this->employeeRepository->find($id);
+        $employee = $this->getEmployee($id);
         if (!$employee) {
-            throw new Exception('Employee not found');
+            return false;
         }
 
-        $this->employeeRepository->remove($employee);
+        $this->entityManager->remove($employee);
+        $this->entityManager->flush();
+
+        return true;
     }
 } 

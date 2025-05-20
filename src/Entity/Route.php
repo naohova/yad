@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'routes')]
-class Route
+class Route implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,30 +22,40 @@ class Route
     #[ORM\JoinColumn(name: 'route_point_id', referencedColumnName: 'id', nullable: false)]
     private RoutePoint $routePoint;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'planned_start_date', type: 'datetime', nullable: true)]
     private ?\DateTime $plannedStartDate;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'planned_end_date', type: 'datetime', nullable: true)]
     private ?\DateTime $plannedEndDate;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTime $actualDate;
+    #[ORM\Column(name: 'actual_start_date', type: 'datetime', nullable: true)]
+    private ?\DateTime $actualStartDate;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'actual_end_date', type: 'datetime', nullable: true)]
+    private ?\DateTime $actualEndDate;
+
+    #[ORM\Column(name: 'delay_reason', type: 'string', length: 255, nullable: true)]
     private ?string $delayReason;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
     private ?\DateTime $updatedAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true)]
     private ?\DateTime $deletedAt;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->updatedAt = null;
+        $this->deletedAt = null;
+        $this->delayReason = null;
+        $this->plannedStartDate = null;
+        $this->plannedEndDate = null;
+        $this->actualStartDate = null;
+        $this->actualEndDate = null;
     }
 
     public function getId(): int
@@ -96,14 +107,25 @@ class Route
         return $this;
     }
 
-    public function getActualDate(): ?\DateTime
+    public function getActualStartDate(): ?\DateTime
     {
-        return $this->actualDate;
+        return $this->actualStartDate;
     }
 
-    public function setActualDate(?\DateTime $actualDate): self
+    public function setActualStartDate(?\DateTime $actualStartDate): self
     {
-        $this->actualDate = $actualDate;
+        $this->actualStartDate = $actualStartDate;
+        return $this;
+    }
+
+    public function getActualEndDate(): ?\DateTime
+    {
+        return $this->actualEndDate;
+    }
+
+    public function setActualEndDate(?\DateTime $actualEndDate): self
+    {
+        $this->actualEndDate = $actualEndDate;
         return $this;
     }
 
@@ -128,7 +150,7 @@ class Route
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): self
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -143,5 +165,22 @@ class Route
     {
         $this->deletedAt = $deletedAt;
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'material' => $this->material,
+            'route_point' => $this->routePoint,
+            'planned_start_date' => $this->plannedStartDate ? $this->plannedStartDate->format('Y-m-d\TH:i:s\Z') : null,
+            'planned_end_date' => $this->plannedEndDate ? $this->plannedEndDate->format('Y-m-d\TH:i:s\Z') : null,
+            'actual_start_date' => $this->actualStartDate ? $this->actualStartDate->format('Y-m-d\TH:i:s\Z') : null,
+            'actual_end_date' => $this->actualEndDate ? $this->actualEndDate->format('Y-m-d\TH:i:s\Z') : null,
+            'delay_reason' => $this->delayReason,
+            'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'updated_at' => $this->updatedAt ? $this->updatedAt->format('Y-m-d\TH:i:s\Z') : null,
+            'deleted_at' => $this->deletedAt ? $this->deletedAt->format('Y-m-d\TH:i:s\Z') : null
+        ];
     }
 } 

@@ -157,4 +157,18 @@ class MaterialProcessService
 
         $this->materialProcessRepository->remove($materialProcess);
     }
+
+    public function getByMaterial(int $materialId): array
+    {
+        $material = $this->materialRepository->findOneBy(['id' => $materialId]);
+        if (!$material) {
+            throw new Exception('Material not found');
+        }
+        return $this->materialProcessRepository->findBy(['material' => $material]);
+    }
+
+    public function create(array $data): MaterialProcess
+    {
+        // Implementation of create method
+    }
 } 

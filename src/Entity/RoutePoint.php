@@ -17,16 +17,19 @@ class RoutePoint implements JsonSerializable
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
+    #[ORM\Column(type: 'string', length: 50)]
+    private string $type;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $description;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
     private ?\DateTime $updatedAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true)]
     private ?\DateTime $deletedAt;
 
     public function __construct()
@@ -49,6 +52,17 @@ class RoutePoint implements JsonSerializable
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 
@@ -95,10 +109,11 @@ class RoutePoint implements JsonSerializable
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'type' => $this->type,
             'description' => $this->description,
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'deletedAt' => $this->deletedAt?->format('Y-m-d H:i:s')
+            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updatedAt?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deletedAt?->format('Y-m-d H:i:s')
         ];
     }
 }

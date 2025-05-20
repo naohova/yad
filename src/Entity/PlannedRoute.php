@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'planned_routes')]
-class PlannedRoute
+class PlannedRoute implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,7 +24,23 @@ class PlannedRoute
     private int $sequence;
 
     #[ORM\Column(name: 'expected_at', type: 'datetime', nullable: true)]
-    private ?\DateTime $expectedAt = null;
+    private ?\DateTime $expectedAt;
+
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private \DateTime $createdAt;
+
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
+    private ?\DateTime $updatedAt;
+
+    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true)]
+    private ?\DateTime $deletedAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = null;
+        $this->deletedAt = null;
+    }
 
     public function getId(): int
     {
@@ -74,17 +91,50 @@ class PlannedRoute
         return $this->expectedAt;
     }
 
-    public function setExpectedAt(?string $expectedAt): self
+    public function setExpectedAt(?\DateTime $expectedAt): self
     {
-        if ($expectedAt === null) {
-            $this->expectedAt = null;
-        } else {
-            try {
-                $this->expectedAt = new \DateTime($expectedAt);
-            } catch (\Exception $e) {
-                throw new \InvalidArgumentException('Invalid date format for expected_at: ' . $expectedAt);
-            }
-        }
+        $this->expectedAt = $expectedAt;
         return $this;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'material_id' => $this->materialId,
+            'route_point_id' => $this->routePointId,
+            'sequence' => $this->sequence,
+            'expected_at' => $this->expectedAt ? $this->expectedAt->format('Y-m-d\TH:i:s\Z') : null,
+            'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'updated_at' => $this->updatedAt ? $this->updatedAt->format('Y-m-d\TH:i:s\Z') : null,
+            'deleted_at' => $this->deletedAt ? $this->deletedAt->format('Y-m-d\TH:i:s\Z') : null
+        ];
     }
 }

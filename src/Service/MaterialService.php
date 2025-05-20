@@ -9,6 +9,7 @@ use App\Repository\RfidTagRepository;
 use App\Repository\MaterialStatusRepository;
 use Exception;
 use App\Validator\MaterialValidator;
+use App\Repository\RoutePointRepository;
 
 class MaterialService
 {
@@ -16,7 +17,8 @@ class MaterialService
         private MaterialRepository $materialRepository,
         private RfidTagRepository $rfidTagRepository,
         private MaterialStatusRepository $materialStatusRepository,
-        private MaterialValidator $validator
+        private MaterialValidator $validator,
+        private RoutePointRepository $routePointRepository
     ) {}
 
     public function createMaterial(array $data): array
@@ -173,6 +175,18 @@ class MaterialService
             'created_at' => $material->getCreatedAt()->format('Y-m-d\TH:i:s.u\Z'),
             'updated_at' => $material->getUpdatedAt()->format('Y-m-d\TH:i:s.u\Z')
         ];
+
+        // Добавляем информацию о текущем местоположении
+        if ($material->getLastRoutePointId()) {
+            $routePoint = $this->routePointRepository->find($material->getLastRoutePointId());
+            if ($routePoint) {
+                $data['current_location'] = [
+                    'id' => $routePoint->getId(),
+                    'name' => $routePoint->getName(),
+                    'description' => $routePoint->getDescription()
+                ];
+            }
+        }
 
         if ($material->getDeletedAt() !== null) {
             $data['deleted_at'] = $material->getDeletedAt()->format('Y-m-d\TH:i:s.u\Z');

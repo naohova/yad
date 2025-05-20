@@ -3,14 +3,16 @@
 namespace App\Service;
 
 use App\Entity\Process;
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Employee;
+use App\Entity\Place;
+use Doctrine\ORM\EntityManager;
 use App\Validator\ProcessValidator;
 use Exception;
 
 class ProcessService
 {
     public function __construct(
-        private EntityRepository $processRepository,
+        private EntityManager $entityManager,
         private ProcessValidator $validator
     ) {}
 
@@ -18,37 +20,46 @@ class ProcessService
     {
         $this->validator->validateCreate($data);
 
+        $responsible = $this->entityManager->find(Employee::class, $data['responsible_id']);
+        if (!$responsible) {
+            throw new Exception('Responsible employee not found');
+        }
+
+        $place = $this->entityManager->find(Place::class, $data['place_id']);
+        if (!$place) {
+            throw new Exception('Place not found');
+        }
+
         $process = new Process();
         $process->setName($data['name']);
         $process->setDescription($data['description'] ?? null);
-        $process->setDurationMinutes($data['duration_minutes'] ?? null);
+        $process->setResponsible($responsible);
+        $process->setPlace($place);
 
-        $this->processRepository->save($process);
+        $this->entityManager->persist($process);
+        $this->entityManager->flush();
+
         return $process;
     }
 
-    public function getProcess(int $id): Process
+    public function getProcess(int $id): ?Process
     {
-        $process = $this->processRepository->find($id);
-        if (!$process) {
-            throw new Exception('Process not found');
-        }
-        return $process;
+        return $this->entityManager->find(Process::class, $id);
     }
 
     public function getAllProcesses(): array
     {
-        return $this->processRepository->findAll();
+        return $this->entityManager->getRepository(Process::class)->findAll();
     }
 
-    public function updateProcess(int $id, array $data): Process
+    public function updateProcess(int $id, array $data): ?Process
     {
-        $this->validator->validateUpdate($data);
-
-        $process = $this->processRepository->find($id);
+        $process = $this->getProcess($id);
         if (!$process) {
-            throw new Exception('Process not found');
+            return null;
         }
+
+        $this->validator->validateUpdate($data);
 
         if (isset($data['name'])) {
             $process->setName($data['name']);
@@ -56,21 +67,36 @@ class ProcessService
         if (isset($data['description'])) {
             $process->setDescription($data['description']);
         }
-        if (isset($data['duration_minutes'])) {
-            $process->setDurationMinutes($data['duration_minutes']);
+        if (isset($data['responsible_id'])) {
+            $responsible = $this->entityManager->find(Employee::class, $data['responsible_id']);
+            if (!$responsible) {
+                throw new Exception('Responsible employee not found');
+            }
+            $process->setResponsible($responsible);
+        }
+        if (isset($data['place_id'])) {
+            $place = $this->entityManager->find(Place::class, $data['place_id']);
+            if (!$place) {
+                throw new Exception('Place not found');
+            }
+            $process->setPlace($place);
         }
 
-        $this->processRepository->save($process);
+        $this->entityManager->flush();
+
         return $process;
     }
 
-    public function deleteProcess(int $id): void
+    public function deleteProcess(int $id): bool
     {
-        $process = $this->processRepository->find($id);
+        $process = $this->getProcess($id);
         if (!$process) {
-            throw new Exception('Process not found');
+            return false;
         }
 
-        $this->processRepository->remove($process);
+        $this->entityManager->remove($process);
+        $this->entityManager->flush();
+
+        return true;
     }
 } 

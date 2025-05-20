@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'employees')]
-class Employee
+class Employee implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -86,5 +87,15 @@ class Employee
     {
         $this->phone = $phone;
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'position' => $this->position,
+            'department' => $this->department
+        ];
     }
 } 

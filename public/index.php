@@ -18,6 +18,7 @@ use App\Controller\EmployeeController;
 use App\Controller\ProcessController;
 use App\Controller\PlaceController;
 use App\Controller\MaterialProcessController;
+use App\Controller\RoutePointController;
 use DI\Container;
 
 define('APP_ROOT', dirname(__DIR__));
@@ -84,11 +85,11 @@ $app->group('/api', function ($group) {
     $group->post('/auth/login', [UserController::class, 'login']);
 
     // Route Points
-    $group->post('/route-points', [RouteController::class, 'createPoint']);
-    $group->get('/route-points', [RouteController::class, 'list']);
-    $group->get('/route-points/{id}', [RouteController::class, 'get']);
-    $group->put('/route-points/{id}', [RouteController::class, 'update']);
-    $group->delete('/route-points/{id}', [RouteController::class, 'delete']);
+    $group->post('/route-points', [RoutePointController::class, 'create']);
+    $group->get('/route-points', [RoutePointController::class, 'list']);
+    $group->get('/route-points/{id}', [RoutePointController::class, 'get']);
+    $group->put('/route-points/{id}', [RoutePointController::class, 'update']);
+    $group->delete('/route-points/{id}', [RoutePointController::class, 'delete']);
 
     // Routes
     $group->post('/routes/planned', [RouteController::class, 'createPlannedRoute']);
@@ -127,14 +128,14 @@ $app->group('/api', function ($group) {
 
     // Material Process routes
     $group->group('/material-processes', function ($group) {
-        $group->get('', [MaterialProcessController::class, 'list']);
+        $group->get('', [MaterialProcessController::class, 'getAll']);
         $group->post('', [MaterialProcessController::class, 'create']);
-        $group->get('/{id}', [MaterialProcessController::class, 'get']);
+        $group->get('/{id}', [MaterialProcessController::class, 'getOne']);
         $group->put('/{id}', [MaterialProcessController::class, 'update']);
         $group->delete('/{id}', [MaterialProcessController::class, 'delete']);
-        $group->get('/material/{material_id}', [MaterialProcessController::class, 'getByMaterial']);
-        $group->get('/employee/{employee_id}', [MaterialProcessController::class, 'getByEmployee']);
-        $group->get('/place/{place_id}', [MaterialProcessController::class, 'getByPlace']);
+        $group->get('/material/{id}', [MaterialProcessController::class, 'getByMaterial']);
+        $group->get('/employee/{id}', [MaterialProcessController::class, 'getByEmployee']);
+        $group->get('/place/{id}', [MaterialProcessController::class, 'getByPlace']);
     });
 });
 

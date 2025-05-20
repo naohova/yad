@@ -21,7 +21,7 @@ class RoutePointRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         return $qb->select('rp')
-            ->from('Entity\RoutePoint', 'rp')
+            ->from('App\Entity\RoutePoint', 'rp')
             ->where('rp.deletedAt IS NULL')
             ->getQuery()
             ->getResult();

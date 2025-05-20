@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use Entity\Material;
-use Entity\MaterialProcess;
-use Entity\Process;
-use Entity\Place;
-use Entity\Employee;
+use App\Entity\Material;
+use App\Entity\MaterialProcess;
+use App\Entity\Process;
+use App\Entity\Place;
+use App\Entity\Employee;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class MaterialLogisticController extends AbstractController
 {
-    private EntityManager $entityManager;
+    protected EntityManager $entityManager;
 
     public function __construct(EntityManager $entityManager)
     {
@@ -42,9 +42,9 @@ class MaterialLogisticController extends AbstractController
                 'name' => $place->getName(),
                 'description' => $place->getDescription(),
                 'place_id' => $place->getId(),
-                'place_type' => $place->getPlaceType(),
+                'place_type' => $place->getType(),
                 'process' => [
-                    'process_id' => $process->getProcessId(),
+                    'process_id' => $process->getId(),
                     'planned_timestamp' => [
                         $materialProcess->getPlannedStart(),
                         $materialProcess->getPlannedEnd()
@@ -55,10 +55,11 @@ class MaterialLogisticController extends AbstractController
                     ],
                     'description' => $process->getDescription(),
                     'responsible' => [
-                        $responsible->getEmployeeId() => [
-                            'employee_id' => $responsible->getEmployeeId(),
+                        $responsible->getId() => [
+                            'employee_id' => $responsible->getId(),
                             'name' => $responsible->getName(),
-                            'second_name' => $responsible->getSecondName()
+                            'position' => $responsible->getPosition(),
+                            'department' => $responsible->getDepartment()
                         ]
                     ]
                 ]

@@ -9,10 +9,12 @@ abstract class AbstractRepository
 {
     protected EntityRepository $repository;
     protected EntityManager $entityManager;
+    protected string $entityClass;
 
     public function __construct(EntityManager $entityManager, string $entityClass)
     {
         $this->entityManager = $entityManager;
+        $this->entityClass = $entityClass;
         $this->repository = $entityManager->getRepository($entityClass);
     }
 
@@ -26,13 +28,23 @@ abstract class AbstractRepository
         return $this->repository->findAll();
     }
 
+    public function findBy(array $criteria, ?array $orderBy = null): array
+    {
+        return $this->repository->findBy($criteria, $orderBy);
+    }
+
+    public function findOneBy(array $criteria): ?object
+    {
+        return $this->repository->findOneBy($criteria);
+    }
+
     public function save($entity): void
     {
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
     }
 
-    public function delete($entity): void
+    public function remove($entity): void
     {
         $this->entityManager->remove($entity);
         $this->entityManager->flush();
@@ -51,14 +63,5 @@ abstract class AbstractRepository
     public function rollback(): void
     {
         $this->entityManager->rollback();
-    }
-    public function findOneBy(array $criteria): ?object
-    {
-        return $this->repository->findOneBy($criteria);
-    }
-
-    public function findBy(array $criteria, ?array $orderBy = null): array
-    {
-        return $this->repository->findBy($criteria, $orderBy);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\RoutePoint;
-use Repository\RoutePointRepository;
-use Validator\RouteValidator;
+use App\Entity\RoutePoint;
+use App\Repository\RoutePointRepository;
+use App\Validator\RouteValidator;
 use Exception;
 
 class RoutePointService
@@ -19,9 +19,13 @@ class RoutePointService
         if (empty($data['name'])) {
             throw new Exception('Name is required');
         }
+        if (empty($data['type'])) {
+            throw new Exception('Type is required');
+        }
 
         $routePoint = new RoutePoint();
         $routePoint->setName($data['name']);
+        $routePoint->setType($data['type']);
         
         if (isset($data['description'])) {
             $routePoint->setDescription($data['description']);
@@ -49,6 +53,10 @@ class RoutePointService
 
         if (isset($data['name'])) {
             $routePoint->setName($data['name']);
+        }
+
+        if (isset($data['type'])) {
+            $routePoint->setType($data['type']);
         }
 
         if (isset($data['description'])) {

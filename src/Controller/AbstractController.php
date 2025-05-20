@@ -14,12 +14,10 @@ abstract class AbstractController
         $this->entityManager = $entityManager;
     }
 
-    protected function jsonResponse(Response $response, $data, int $status = 200): Response
+    protected function jsonResponse(Response $response, $data): Response
     {
         $response->getBody()->write(json_encode($data));
-        return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($status);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
     protected function notFoundResponse(Response $response): Response

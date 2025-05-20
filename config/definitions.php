@@ -67,6 +67,9 @@ use App\Entity\Employee;
 use App\Entity\Process;
 use App\Entity\Place;
 use App\Entity\MaterialProcess;
+use App\Service\MaterialInfoService;
+use App\Controller\MaterialInfoController;
+use Psr\Container\ContainerInterface;
 
 
 return [
@@ -78,7 +81,7 @@ return [
 
         $connection = DriverManager::getConnection([
             'driver' => 'pdo_pgsql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => 5432,
             'dbname' => 'postgres',
             'user' => 'postgres',
@@ -150,9 +153,30 @@ return [
         MaterialRepository $materialRepository,
         RfidTagRepository $rfidTagRepository,
         MaterialStatusRepository $materialStatusRepository,
-        MaterialValidator $validator
+        MaterialValidator $validator,
+        RoutePointRepository $routePointRepository
     ) {
-        return new MaterialService($materialRepository, $rfidTagRepository, $materialStatusRepository, $validator);
+        return new MaterialService(
+            $materialRepository,
+            $rfidTagRepository,
+            $materialStatusRepository,
+            $validator,
+            $routePointRepository
+        );
+    },
+
+    MaterialInfoService::class => function(
+        MaterialRepository $materialRepository,
+        MaterialProcessRepository $materialProcessRepository,
+        MaterialStatusRepository $materialStatusRepository,
+        RoutePointRepository $routePointRepository
+    ) {
+        return new MaterialInfoService(
+            $materialRepository,
+            $materialProcessRepository,
+            $materialStatusRepository,
+            $routePointRepository
+        );
     },
 
     MovementService::class => function(
@@ -224,7 +248,10 @@ return [
         RoutePointRepository $routePointRepository,
         RouteValidator $validator
     ) {
-        return new RoutePointService($routePointRepository, $validator);
+        return new RoutePointService(
+            $routePointRepository,
+            $validator
+        );
     },
 
     MaterialStatusService::class => function(
@@ -240,34 +267,26 @@ return [
     },
 
     EmployeeService::class => function(EntityManager $entityManager, EmployeeValidator $validator) {
-        return new EmployeeService(
-            $entityManager->getRepository(Employee::class),
-            $validator
-        );
+        return new EmployeeService($entityManager, $validator);
     },
 
     ProcessService::class => function(EntityManager $entityManager, ProcessValidator $validator) {
-        return new ProcessService(
-            $entityManager->getRepository(Process::class),
-            $validator
-        );
+        return new ProcessService($entityManager, $validator);
     },
 
     PlaceService::class => function(EntityManager $entityManager, PlaceValidator $validator) {
-        return new PlaceService(
-            $entityManager->getRepository(Place::class),
-            $validator
-        );
+        return new PlaceService($entityManager, $validator);
     },
 
-    MaterialProcessService::class => function(EntityManager $entityManager, MaterialProcessValidator $validator) {
+    MaterialProcessService::class => function (ContainerInterface $container) {
+        $entityManager = $container->get(EntityManager::class);
         return new MaterialProcessService(
             $entityManager->getRepository(MaterialProcess::class),
             $entityManager->getRepository(Material::class),
             $entityManager->getRepository(Process::class),
             $entityManager->getRepository(Employee::class),
             $entityManager->getRepository(Place::class),
-            $validator
+            $container->get(MaterialProcessValidator::class)
         );
     },
 
@@ -308,8 +327,11 @@ return [
         return new PlaceController($entityManager, $placeService);
     },
 
-    MaterialProcessController::class => function(EntityManager $entityManager, MaterialProcessService $materialProcessService) {
-        return new MaterialProcessController($entityManager, $materialProcessService);
+    MaterialProcessController::class => function (ContainerInterface $container) {
+        return new MaterialProcessController(
+            $container->get(EntityManager::class),
+            $container->get(MaterialProcessService::class)
+        );
     },
 
     // Validators
@@ -355,6 +377,10 @@ return [
 
     TestController::class => function(EntityManager $entityManager) {
         return new TestController($entityManager);
+    },
+
+    MaterialInfoController::class => function(MaterialInfoService $materialInfoService) {
+        return new MaterialInfoController($materialInfoService);
     },
 
     RouteService::class => function(EntityManager $entityManager) {

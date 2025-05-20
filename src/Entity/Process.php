@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'processes')]
-class Process
+class Process implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,13 +15,18 @@ class Process
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $name;
+    private string $name = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $durationMinutes = null;
+    #[ORM\ManyToOne(targetEntity: Employee::class)]
+    #[ORM\JoinColumn(name: 'responsible_id', referencedColumnName: 'id', nullable: false)]
+    private Employee $responsible;
+
+    #[ORM\ManyToOne(targetEntity: Place::class)]
+    #[ORM\JoinColumn(name: 'place_id', referencedColumnName: 'id', nullable: false)]
+    private Place $place;
 
     public function getId(): ?int
     {
@@ -49,14 +55,36 @@ class Process
         return $this;
     }
 
-    public function getDurationMinutes(): ?int
+    public function getResponsible(): Employee
     {
-        return $this->durationMinutes;
+        return $this->responsible;
     }
 
-    public function setDurationMinutes(?int $durationMinutes): self
+    public function setResponsible(Employee $responsible): self
     {
-        $this->durationMinutes = $durationMinutes;
+        $this->responsible = $responsible;
         return $this;
+    }
+
+    public function getPlace(): Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(Place $place): self
+    {
+        $this->place = $place;
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'responsible' => $this->responsible,
+            'place' => $this->place
+        ];
     }
 } 

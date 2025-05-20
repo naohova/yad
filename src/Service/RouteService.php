@@ -53,7 +53,10 @@ class RouteService
         $plannedRoute->setMaterialId($material->getId());
         $plannedRoute->setRoutePointId($routePoint->getId());
         $plannedRoute->setSequence($data['sequence']);
-        $plannedRoute->setExpectedAt(new \DateTime($data['expected_at'] ?? 'now'));
+        
+        if (isset($data['planned_start_date'])) {
+            $plannedRoute->setExpectedAt(new \DateTime($data['planned_start_date']));
+        }
 
         $this->plannedRouteRepository->save($plannedRoute);
 
