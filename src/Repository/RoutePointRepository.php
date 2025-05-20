@@ -1,15 +1,30 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\RoutePoint;
+use App\Entity\RoutePoint;
 
 class RoutePointRepository extends AbstractRepository
 {
     public function __construct(EntityManager $entityManager)
     {
         parent::__construct($entityManager, RoutePoint::class);
+    }
+
+    public function findByName(string $name): array
+    {
+        return $this->repository->findBy(['name' => $name]);
+    }
+
+    public function findActive(): array
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        return $qb->select('rp')
+            ->from('Entity\RoutePoint', 'rp')
+            ->where('rp.deletedAt IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findByType(string $type): array

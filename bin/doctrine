@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\Console\ConsoleRunner;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+use Symfony\Component\Console\Helper\HelperSet;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$container = require dirname(__DIR__) . '/config/definitions.php';
+$entityManager = $container[EntityManager::class]();
+
+$connection = $entityManager->getConnection();
+
+$helperSet = new HelperSet([
+    'em' => new EntityManagerHelper($entityManager),
+    'db' => new ConnectionHelper($connection)
+]);
+
+ConsoleRunner::run($helperSet); 

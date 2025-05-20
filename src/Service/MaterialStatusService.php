@@ -1,11 +1,11 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\MaterialStatus;
-use Repository\MaterialStatusRepository;
-use Repository\MaterialRepository;
-use Repository\RoutePointRepository;
+use App\Entity\MaterialStatus;
+use App\Repository\MaterialStatusRepository;
+use App\Repository\MaterialRepository;
+use App\Repository\RoutePointRepository;
 use Exception;
 
 class MaterialStatusService

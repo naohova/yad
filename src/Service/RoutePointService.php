@@ -16,47 +16,48 @@ class RoutePointService
 
     public function createRoutePoint(array $data): RoutePoint
     {
-        $this->validator->validateCreatePoint($data);
+        if (empty($data['name'])) {
+            throw new Exception('Name is required');
+        }
 
-        $point = new RoutePoint();
-        $point->setName($data['name']);
-        $point->setType($data['type']);
-
-        $this->routePointRepository->save($point);
+        $routePoint = new RoutePoint();
+        $routePoint->setName($data['name']);
         
-        return $point;
+        if (isset($data['description'])) {
+            $routePoint->setDescription($data['description']);
+        }
+
+        $this->routePointRepository->save($routePoint);
+        return $routePoint;
     }
 
-    public function getRoutePoint(int $id): array
+    public function getRoutePoint(int $id): RoutePoint
     {
-        $point = $this->routePointRepository->find($id);
-        if (!$point) {
+        $routePoint = $this->routePointRepository->find($id);
+        if (!$routePoint) {
             throw new Exception('Route point not found');
         }
-        
-        return [
-            'id' => $point->getId(),
-            'name' => $point->getName(),
-            'type' => $point->getType()
-        ];
+        return $routePoint;
     }
 
     public function updateRoutePoint(int $id, array $data): RoutePoint
     {
-        $point = $this->routePointRepository->find($id);
-        if (!$point) {
+        $routePoint = $this->routePointRepository->find($id);
+        if (!$routePoint) {
             throw new Exception('Route point not found');
         }
 
         if (isset($data['name'])) {
-            $point->setName($data['name']);
-        }
-        if (isset($data['type'])) {
-            $point->setType($data['type']);
+            $routePoint->setName($data['name']);
         }
 
-        $this->routePointRepository->save($point);
-        return $point;
+        if (isset($data['description'])) {
+            $routePoint->setDescription($data['description']);
+        }
+
+        $routePoint->setUpdatedAt(new \DateTime());
+        $this->routePointRepository->save($routePoint);
+        return $routePoint;
     }
 
     public function getPointsByType(string $type): array
@@ -71,31 +72,19 @@ class RoutePointService
         }, $points);
     }
 
-    public function getAllPoints(): array
+    public function getAllRoutePoints(): array
     {
-        $points = $this->routePointRepository->findAll();
-        return array_map(function($point) {
-            return [
-                'id' => $point->getId(),
-                'name' => $point->getName(),
-                'type' => $point->getType()
-            ];
-        }, $points);
+        return $this->routePointRepository->findActive();
     }
 
-    public function deletePoint(int $id): void
+    public function deleteRoutePoint(int $id): void
     {
-        $point = $this->routePointRepository->find($id);
-        if (!$point) {
+        $routePoint = $this->routePointRepository->find($id);
+        if (!$routePoint) {
             throw new Exception('Route point not found');
         }
-        
-        // Проверяем, не используется ли точка в маршрутах
-        $routes = $this->routePointRepository->findByRoutePoint($id);
-        if (!empty($routes)) {
-            throw new Exception('Cannot delete route point that is used in routes');
-        }
-        
-        $this->routePointRepository->delete($point);
+
+        $routePoint->setDeletedAt(new \DateTime());
+        $this->routePointRepository->save($routePoint);
     }
 }

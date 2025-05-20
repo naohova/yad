@@ -1,10 +1,10 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Service\MaterialService;
+use App\Service\MaterialService;
 use Exception;
 
 class MaterialController extends AbstractController

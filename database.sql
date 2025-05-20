@@ -68,6 +68,54 @@ CREATE TABLE movement_events (
     note VARCHAR NOT NULL
 );
 
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    position VARCHAR NOT NULL,
+    department VARCHAR NOT NULL,
+    email VARCHAR,
+    phone VARCHAR,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE place (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    type VARCHAR NOT NULL,
+    description TEXT,
+    location VARCHAR,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE process (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    description TEXT,
+    duration_minutes INT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE material_process (
+    id SERIAL PRIMARY KEY,
+    material_id INT NOT NULL,
+    process_id INT NOT NULL,
+    employee_id INT NOT NULL,
+    place_id INT NOT NULL,
+    start_time TIMESTAMP DEFAULT NOW(),
+    end_time TIMESTAMP,
+    status VARCHAR NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (material_id) REFERENCES materials(id),
+    FOREIGN KEY (process_id) REFERENCES process(id),
+    FOREIGN KEY (employee_id) REFERENCES employee(id),
+    FOREIGN KEY (place_id) REFERENCES place(id)
+);
+
 ALTER TABLE rfid_tags
 ADD CONSTRAINT fk_rfid_tags_materials
 FOREIGN KEY (material_id) REFERENCES materials(id);
@@ -111,6 +159,13 @@ FOREIGN KEY (material_id) REFERENCES materials(id);
 ALTER TABLE movement_events
 ADD CONSTRAINT fk_movement_events_users
 FOREIGN KEY (scanned_by) REFERENCES users(id);
+
+-- Индексы для оптимизации запросов
+CREATE INDEX idx_material_process_material ON material_process(material_id);
+CREATE INDEX idx_material_process_process ON material_process(process_id);
+CREATE INDEX idx_material_process_employee ON material_process(employee_id);
+CREATE INDEX idx_material_process_place ON material_process(place_id);
+CREATE INDEX idx_material_process_status ON material_process(status);
 
 -- ------------------------------ --
 -- CREATE TABLE product (

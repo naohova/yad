@@ -1,10 +1,10 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\RfidTag;
-use Repository\RfidTagRepository;
-use Repository\MaterialRepository;
+use App\Entity\RfidTag;
+use App\Repository\RfidTagRepository;
+use App\Repository\MaterialRepository;
 use Exception;
 
 class RfidTagService

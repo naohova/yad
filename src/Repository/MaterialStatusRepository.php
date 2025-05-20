@@ -1,9 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\MaterialStatus;
+use App\Entity\MaterialStatus;
 
 class MaterialStatusRepository extends AbstractRepository
 {

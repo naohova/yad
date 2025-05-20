@@ -1,124 +1,96 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Service\PlannedRouteService;
-use Service\RoutePointService;
+use App\Service\RouteService;
 use Exception;
 
 class RouteController extends AbstractController
 {
     public function __construct(
-        private PlannedRouteService $plannedRouteService,
-        private RoutePointService $routePointService
+        private RouteService $routeService
     ) {}
+
+    public function createPlannedRoute(Request $request, Response $response): Response
+    {
+        try {
+            $data = $request->getParsedBody();
+            $route = $this->routeService->createPlannedRoute($data);
+            return $this->jsonResponse($response, $route, 201);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
+        }
+    }
+
+    public function createActualRoute(Request $request, Response $response): Response
+    {
+        try {
+            $data = $request->getParsedBody();
+            $route = $this->routeService->createActualRoute($data);
+            return $this->jsonResponse($response, $route, 201);
+        } catch (Exception $e) {
+            return $this->errorResponse($response, $e->getMessage());
+        }
+    }
 
     public function createPoint(Request $request, Response $response): Response
     {
         try {
             $data = $request->getParsedBody();
-            if (!isset($data['name'], $data['type'])) {
-                throw new Exception('Missing required parameters');
-            }
-            
-            $point = $this->routePointService->createRoutePoint($data);
-            return $this->jsonResponse($response, [
-                'id' => $point->getId(),
-                'name' => $point->getName(),
-                'type' => $point->getType()
-            ], 201);
+            $point = $this->routeService->createRoutePoint($data);
+            return $this->jsonResponse($response, $point, 201);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage());
         }
     }
 
-    public function listPoints(Request $request, Response $response): Response
+    public function list(Request $request, Response $response): Response
     {
         try {
-            $points = $this->routePointService->getAllPoints();
-            return $this->jsonResponse($response, ['points' => $points]);
+            $params = $request->getQueryParams();
+            $routes = match (true) {
+                isset($params['type']) && $params['type'] === 'planned' => $this->routeService->getPlannedRoutes(),
+                isset($params['type']) && $params['type'] === 'completed' => $this->routeService->getCompletedRoutes(),
+                isset($params['type']) && $params['type'] === 'delayed' => $this->routeService->getDelayedRoutes(),
+                isset($params['material_id']) => $this->routeService->getMaterialRoutes((int)$params['material_id']),
+                default => $this->routeService->getAllRoutes(),
+            };
+            return $this->jsonResponse($response, $routes);
         } catch (Exception $e) {
             return $this->errorResponse($response, $e->getMessage());
         }
     }
 
-    public function getPoint(Request $request, Response $response, string $id): Response
+    public function get(Request $request, Response $response, string $id): Response
     {
         try {
-            $point = $this->routePointService->getRoutePoint((int)$id);
-            return $this->jsonResponse($response, $point);
+            $route = $this->routeService->getRoute((int)$id);
+            return $this->jsonResponse($response, $route);
         } catch (Exception $e) {
-            return $this->errorResponse($response, $e->getMessage());
+            return $this->errorResponse($response, $e->getMessage(), 404);
         }
     }
 
-    public function updatePoint(Request $request, Response $response, string $id): Response
-    {
-        try {
-            $data = $request->getParsedBody();
-            $point = $this->routePointService->updateRoutePoint((int)$id, $data);
-            return $this->jsonResponse($response, [
-                'id' => $point->getId(),
-                'name' => $point->getName(),
-                'type' => $point->getType()
-            ]);
-        } catch (Exception $e) {
-            return $this->errorResponse($response, $e->getMessage());
-        }
-    }
-
-    public function deletePoint(Request $request, Response $response, string $id): Response
-    {
-        try {
-            $this->routePointService->deletePoint((int)$id);
-            return $this->jsonResponse($response, ['message' => 'Route point deleted successfully'], 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($response, $e->getMessage());
-        }
-    }
-
-    public function planRoute(Request $request, Response $response): Response
+    public function update(Request $request, Response $response, string $id): Response
     {
         try {
             $data = $request->getParsedBody();
-            if (!is_array($data)) {
-                error_log('Invalid request body: ' . var_export($data, true));
-                throw new Exception('Invalid request body');
-            }
-
-            error_log('Request data: ' . json_encode($data, JSON_PRETTY_PRINT));
-            
-            if (!isset($data['material_id'])) {
-                error_log('Missing material_id in request');
-                throw new Exception('Missing material_id');
-            }
-
-            if (!isset($data['route_points']) || !is_array($data['route_points'])) {
-                error_log('Missing or invalid route_points in request');
-                throw new Exception('Missing or invalid route_points');
-            }
-
-            $routes = $this->plannedRouteService->createRoute($data);
-            error_log('Routes created successfully: ' . json_encode($routes, JSON_PRETTY_PRINT));
-            return $this->jsonResponse($response, $routes, 201);
+            $route = $this->routeService->updateRoute((int)$id, $data);
+            return $this->jsonResponse($response, $route);
         } catch (Exception $e) {
-            error_log('Error in planRoute: ' . $e->getMessage());
-            error_log('Stack trace: ' . $e->getTraceAsString());
             return $this->errorResponse($response, $e->getMessage());
         }
     }
 
-    public function getMaterialRoute(Request $request, Response $response, string $materialId): Response
+    public function delete(Request $request, Response $response, string $id): Response
     {
         try {
-            $routes = $this->plannedRouteService->getMaterialRoute((int)$materialId);
-            return $this->jsonResponse($response, $routes, 200);
+            $this->routeService->deleteRoute((int)$id);
+            return $this->jsonResponse($response, ['message' => 'Route deleted']);
         } catch (Exception $e) {
-            error_log('Error in getMaterialRoute: ' . $e->getMessage());
-            error_log('Stack trace: ' . $e->getTraceAsString());
-            return $this->jsonResponse($response, ['error' => $e->getMessage()], 400);
+            return $this->errorResponse($response, $e->getMessage());
         }
     }
 } 

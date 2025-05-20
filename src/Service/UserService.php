@@ -1,10 +1,10 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\User;
-use Repository\UserRepository;
-use Validator\UserValidator;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Validator\UserValidator;
 use Exception;
 
 class UserService

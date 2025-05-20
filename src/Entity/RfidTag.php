@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,8 +13,17 @@ class RfidTag
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'integer')]
-    private int $materialId;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $tag;
+
+    #[ORM\Column(name: 'material_id', type: 'integer', nullable: true)]
+    private ?int $materialId = null;
+
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private \DateTime $createdAt;
+
+    #[ORM\Column(name: 'updated_at', type: 'datetime')]
+    private \DateTime $updatedAt;
 
     #[ORM\Column(name: 'tag_uid', type: 'string')]
     private string $tagUid;

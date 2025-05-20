@@ -1,15 +1,15 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\MovementEvent;
-use Entity\MaterialStatus;
-use Repository\MovementEventRepository;
-use Repository\MaterialStatusRepository;
-use Repository\MaterialRepository;
-use Repository\RoutePointRepository;
-use Repository\PlannedRouteRepository;
-use Validator\MovementValidator;
+use App\Entity\MovementEvent;
+use App\Entity\MaterialStatus;
+use App\Repository\MovementEventRepository;
+use App\Repository\MaterialStatusRepository;
+use App\Repository\MaterialRepository;
+use App\Repository\RoutePointRepository;
+use App\Repository\PlannedRouteRepository;
+use App\Validator\MovementValidator;
 use Exception;
 
 class MovementService
@@ -52,7 +52,7 @@ class MovementService
             $event = new MovementEvent();
             $event->setMaterialId($material->getId());
             $event->setRoutePointId($routePoint->getId());
-            $event->setScannedBy($data['user_id']);
+            $event->setScannedBy($data['scanned_by']);
             $event->setScannedAt(new \DateTime());
             $event->setIsDeviation($isDeviation);
             $event->setNote($data['note'] ?? '');

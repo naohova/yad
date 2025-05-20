@@ -1,6 +1,8 @@
 <?php
 
-namespace Validator;
+namespace App\Validator;
+
+use App\Validator\AbstractValidator;
 
 class MovementValidator extends AbstractValidator
 {
@@ -10,12 +12,12 @@ class MovementValidator extends AbstractValidator
             'required' => [
                 ['material_id'],
                 ['route_point_id'],
-                ['user_id']
+                ['scanned_by']
             ],
             'integer' => [
                 ['material_id'],
                 ['route_point_id'],
-                ['user_id']
+                ['scanned_by']
             ],
             'lengthMax' => [
                 ['note', 1000]

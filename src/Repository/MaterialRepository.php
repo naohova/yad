@@ -1,9 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\Material;
+use App\Entity\Material;
 
 class MaterialRepository extends AbstractRepository
 {
@@ -26,7 +26,7 @@ class MaterialRepository extends AbstractRepository
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb->select('m')
-           ->from('Entity\Material', 'm');
+           ->from('App\Entity\Material', 'm');
 
         $conditions = [];
         $parameters = [];

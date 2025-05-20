@@ -1,7 +1,8 @@
 <?php
 
-namespace Validator;
+namespace App\Validator;
 
+use App\Validator\AbstractValidator;
 use Valitron\Validator;
 use Exception;
 
@@ -99,5 +100,63 @@ class RouteValidator extends AbstractValidator
             }
             $pointIds[] = $point['route_point_id'];
         }
+    }
+
+    public function validatePlannedRoute(array $data): void
+    {
+        $rules = [
+            'required' => [
+                ['material_id'],
+                ['route_point_id'],
+                ['sequence']
+            ],
+            'integer' => [
+                ['material_id'],
+                ['route_point_id'],
+                ['sequence']
+            ],
+            'datetime' => [
+                ['expected_at']
+            ]
+        ];
+
+        $this->validate($data, $rules);
+    }
+
+    public function validateActualRoute(array $data): void
+    {
+        $rules = [
+            'required' => [
+                ['material_id'],
+                ['route_point_id']
+            ],
+            'integer' => [
+                ['material_id'],
+                ['route_point_id']
+            ],
+            'datetime' => [
+                ['planned_start_date'],
+                ['planned_end_date'],
+                ['actual_start_date'],
+                ['actual_end_date']
+            ]
+        ];
+
+        $this->validate($data, $rules);
+    }
+
+    public function validateRoutePoint(array $data): void
+    {
+        $rules = [
+            'required' => [
+                ['name']
+            ],
+            'lengthMax' => [
+                ['name', 255],
+                ['description', 255]
+            ]
+        ];
+
+        $this->validate($data, $rules);
     }
 } 

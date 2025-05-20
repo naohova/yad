@@ -1,6 +1,6 @@
 <?php
 
-namespace Validator;
+namespace App\Validator;
 
 class MaterialValidator extends AbstractValidator
 {

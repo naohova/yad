@@ -1,14 +1,14 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\Material;
-use Entity\MaterialStatus;
-use Repository\MaterialRepository;
-use Repository\RfidTagRepository;
-use Repository\MaterialStatusRepository;
+use App\Entity\Material;
+use App\Entity\MaterialStatus;
+use App\Repository\MaterialRepository;
+use App\Repository\RfidTagRepository;
+use App\Repository\MaterialStatusRepository;
 use Exception;
-use \Validator\MaterialValidator;
+use App\Validator\MaterialValidator;
 
 class MaterialService
 {

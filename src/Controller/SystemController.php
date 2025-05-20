@@ -1,6 +1,6 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -10,7 +10,7 @@ use Exception;
 class SystemController extends AbstractController
 {
     public function __construct(
-        private EntityManager $entityManager
+        protected EntityManager $entityManager
     ) {}
 
     public function healthCheck(Request $request, Response $response): Response

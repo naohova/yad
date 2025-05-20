@@ -1,11 +1,11 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\MaterialReceipt;
-use Repository\MaterialReceiptRepository;
-use Repository\MaterialRepository;
-use Repository\UserRepository;
+use App\Entity\MaterialReceipt;
+use App\Repository\MaterialReceiptRepository;
+use App\Repository\MaterialRepository;
+use App\Repository\UserRepository;
 use Exception;
 
 class MaterialReceiptService

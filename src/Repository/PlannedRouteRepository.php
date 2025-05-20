@@ -1,9 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\PlannedRoute;
+use App\Entity\PlannedRoute;
 
 class PlannedRouteRepository extends AbstractRepository
 {

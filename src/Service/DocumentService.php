@@ -1,11 +1,11 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
-use Entity\Document;
-use Repository\DocumentRepository;
-use Repository\MaterialRepository;
-use Validator\DocumentValidator;
+use App\Entity\Document;
+use App\Repository\DocumentRepository;
+use App\Repository\MaterialRepository;
+use App\Validator\DocumentValidator;
 use Exception;
 use Psr\Http\Message\UploadedFileInterface;
 

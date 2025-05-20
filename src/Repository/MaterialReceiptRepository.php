@@ -1,9 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\MaterialReceipt;
+use App\Entity\MaterialReceipt;
 
 class MaterialReceiptRepository extends AbstractRepository
 {

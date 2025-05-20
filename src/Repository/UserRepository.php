@@ -1,9 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Doctrine\ORM\EntityManager;
-use Entity\User;
+use App\Entity\User;
 
 class UserRepository extends AbstractRepository
 {

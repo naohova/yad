@@ -1,10 +1,10 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Service\MovementService;
+use App\Service\MovementService;
 use Exception;
 
 class ScanResponse {
@@ -51,13 +51,13 @@ class MovementController extends AbstractController
         try {
             $data = $request->getParsedBody();
             if (!isset($data['material_id'], $data['route_point_id'], $data['scanned_by'])) {
-                throw new Exception('Missing required parameters');
+                throw new Exception('Missing required parameters: ' . implode(', ', array_diff(['material_id', 'route_point_id', 'scanned_by'], array_keys($data))));
             }
             
             $event = $this->movementService->scanMaterial([
                 'material_id' => (int)$data['material_id'],
                 'route_point_id' => (int)$data['route_point_id'],
-                'user_id' => (int)$data['scanned_by'],
+                'scanned_by' => (int)$data['scanned_by'],
                 'note' => $data['note'] ?? ''
             ]);
             
